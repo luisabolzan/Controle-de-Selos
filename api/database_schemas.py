@@ -1,6 +1,5 @@
-from sqlalchemy import (Column, Integer, String, Boolean, 
-                        DateTime, ForeignKey, Enum)
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import (Column, Integer, String, Boolean, DateTime, ForeignKey, Enum)
+from sqlalchemy.orm import declarative_base
 from datetime import datetime
 import enum
 
@@ -11,6 +10,8 @@ class Users(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    password_hash = Column(String(128), nullable=False)
+
     cpf = Column(String(11), unique=True, nullable=False, index=True)
     email = Column(String(100), unique=True, nullable=False, index=True)
     name = Column(String(100), nullable=False)
@@ -30,7 +31,7 @@ class Vehicles(Base):
 
 class UsersVehicles(Base):
     __tablename__ = 'users_vehicles'
-    user_cpf = Column(String, ForeignKey('users.cpf'), primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), primary_key=True)
 
 class TagTypes(enum.Enum):
@@ -57,7 +58,7 @@ class Solicitation(Base):
     reviewed = Column(Boolean, default=False)
 
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
-    user_cpf = Column(String, ForeignKey('users.cpf'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
 class Loan(Base):
     __tablename__ = 'loans'
@@ -68,6 +69,6 @@ class Loan(Base):
     expired = Column(Boolean, default=False)
     datetime_creation = Column(DateTime, default=datetime.now())
 
-    tag_id = Column(Integer, ForeignKey('tags.id'), nullable=False, unique=True)
+    tag_id = Column(Integer, ForeignKey('tags.id'), nullable=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
-    user_cpf = Column(String, ForeignKey('users.cpf'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
