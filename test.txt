@@ -7,3 +7,6 @@ values('asdasdd', 'nazar', 'vermelho');
 
 insert into users (password_hash, cpf, email, name)
 VALUES('123,çldfsg,df', '023331412', 'gabriel.nazar@inf.ufrgs', 'gabriel nazar');
+
+
+curl -X POST "http://localhost:8000/api/solicitations" -H "Content-Type: application/json" -d "{\"vehicle_id\": 1, \"user_id\": 1}"
