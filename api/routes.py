@@ -7,7 +7,6 @@ from api.database_queries import create_solicitation
 
 app = FastAPI()
 
-
 class SolicitationDTO(BaseModel):
     solicitation_id: int
     vehicle_id: int
