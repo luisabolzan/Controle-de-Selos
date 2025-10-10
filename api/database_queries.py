@@ -1,8 +1,7 @@
-from api_schemas import SolicitationDTO, TagDTO
-from database_models import Users, Vehicles, UsersVehicles, Tags, Solicitation, Loan, TagTypes
+from api_schemas import SolicitationDTO
+from database_models import Solicitation
 from database_access import DatabaseAccess
 from sqlalchemy import func
-from sqlalchemy.orm import joinedload, selectinload
 
 
 db_access = DatabaseAccess()
@@ -33,8 +32,6 @@ def update_solicitation_status(solicitation_id: int, approved: bool):
     return solicitation
 
 def get_all_solicitations():
-    solicitations = session.query(Solicitation).options(
-        joinedload(Solicitation.vehicle),
-        joinedload(Solicitation.user)
-    ).all()
+    solicitations = session.query(Solicitation).all()
+    session.commit()
     return solicitations
