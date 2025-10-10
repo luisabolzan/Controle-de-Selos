@@ -2,3 +2,4 @@ sqlalchemy
 fastapi[standard]
 uvicorn
 python-dotenv
+psycopg2

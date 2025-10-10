@@ -1,20 +1,24 @@
-from models import Users, Vehicles, UsersVehicles, Tags, Solicitation, Loan, TagTypes
-from database import DatabaseAccess
-from sqlalchemy import func, or_
+from api_schemas import SolicitationDTO, TagDTO
+from database_models import Users, Vehicles, UsersVehicles, Tags, Solicitation, Loan, TagTypes
+from database_access import DatabaseAccess
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload, selectinload
 
-def create_solicitation( solicitation_id: int, vehicle_id: int, user_id: int):
+
+db_access = DatabaseAccess()
+session = db_access.session
+
+def create_solicitation(solicitation: SolicitationDTO):
     new_solicitation = Solicitation(
-        solicitation_id=solicitation_id,
-        vehicle_id=vehicle_id,
-        user_id=user_id,
+        vehicle_id=solicitation.vehicle_id,
+        user_id=solicitation.user_id,
         creation_date=func.now(),
         is_approved=False,
         reviewed=False
     )
     session.add(new_solicitation)
     session.commit()
-    print(f"✅ Solicitação criada com ID: {new_solicitation.solicitation_id}")
+    print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
     return new_solicitation
 
 def update_solicitation_status(solicitation_id: int, approved: bool):
@@ -25,7 +29,7 @@ def update_solicitation_status(solicitation_id: int, approved: bool):
     solicitation.is_approved = approved
     solicitation.reviewed = True
     session.commit()
-    print(f"✅ Solicitação ID {solicitation_id} atualizada para {'aprovada' if approved else 'rejeitada'}.")
+    print(f" Solicitação ID {solicitation_id} atualizada para {'aprovada' if approved else 'rejeitada'}.")
     return solicitation
 
 def get_all_solicitations():

@@ -1,20 +1,11 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from api.database_queries import create_solicitation
+from database_queries import create_solicitation
+from api_schemas import SolicitationDTO, TagDTO
 
 # Run this file with:
 # uvicorn routes:app --reload
 
 app = FastAPI()
-
-class SolicitationDTO(BaseModel):
-    solicitation_id: int
-    vehicle_id: int
-    user_id: int
-
-class TagDTO(BaseModel):
-    tag_id: int
-    tag_type: str
 
 @app.post('/api/solicitations') 
 def add_solicitation(solicitation: SolicitationDTO) -> None:

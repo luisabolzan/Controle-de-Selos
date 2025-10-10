@@ -31,8 +31,8 @@ class Vehicles(Base):
 
 class UsersVehicles(Base):
     __tablename__ = 'users_vehicles'
-    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-    vehicle_id = Column(Integer, ForeignKey('vehicles.id'), primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.user_id'), primary_key=True)
+    vehicle_id = Column(Integer, ForeignKey('vehicles.vehicle_id'), primary_key=True)
 
 class TagTypes(enum.Enum):
     temp = "temp"
@@ -57,8 +57,8 @@ class Solicitation(Base):
     is_approved = Column(Boolean, nullable=True)
     reviewed = Column(Boolean, default=False)
 
-    vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    vehicle_id = Column(Integer, ForeignKey('vehicles.vehicle_id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
 
 class Loan(Base):
     __tablename__ = 'loans'
@@ -69,6 +69,6 @@ class Loan(Base):
     expired = Column(Boolean, default=False)
     creation_date = Column(DateTime, default=datetime.now())
 
-    tag_id = Column(Integer, ForeignKey('tags.id'), nullable=False)
-    vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    tag_id = Column(Integer, ForeignKey('tags.tag_id'), nullable=False)
+    vehicle_id = Column(Integer, ForeignKey('vehicles.vehicle_id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
