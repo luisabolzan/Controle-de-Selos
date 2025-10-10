@@ -9,7 +9,7 @@ class Users(Base):
 
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     password_hash = Column(String(128), nullable=False)
 
     cpf = Column(String(11), unique=True, nullable=False, index=True)
@@ -24,7 +24,7 @@ class Vehicles(Base):
 
     __tablename__ = 'vehicles'
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    vehicle_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     plate = Column(String(10), unique=True, nullable=False, index=True)
     model = Column(String(50), nullable=True)
     color = Column(String(30), nullable=True)
@@ -43,8 +43,8 @@ class Tags(Base):
 
     __tablename__ = 'tags'
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    type = Column(Enum(TagTypes), nullable=False)
+    tag_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    tag_type = Column(Enum(TagTypes), nullable=False)
     available = Column(Boolean, default=True)
     register_date = Column(DateTime, default=datetime.now())
 
@@ -52,8 +52,8 @@ class Solicitation(Base):
 
     __tablename__ = 'solicitations'
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    datetime = Column(DateTime, default=datetime.now())
+    solicitation_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    creation_date = Column(DateTime, default=datetime.now())
     is_approved = Column(Boolean, nullable=True)
     reviewed = Column(Boolean, default=False)
 
@@ -63,11 +63,11 @@ class Solicitation(Base):
 class Loan(Base):
     __tablename__ = 'loans'
     
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    datetime_start = Column(DateTime, nullable=False)
-    datetime_end = Column(DateTime, nullable=False)
+    loan_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=False)
     expired = Column(Boolean, default=False)
-    datetime_creation = Column(DateTime, default=datetime.now())
+    creation_date = Column(DateTime, default=datetime.now())
 
     tag_id = Column(Integer, ForeignKey('tags.id'), nullable=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
