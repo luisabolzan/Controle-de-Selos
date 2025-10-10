@@ -13,11 +13,11 @@ def success_response(data: any) -> ResponseDTO:
 def failed_response(message: str) -> ResponseDTO:
     return ResponseDTO(success=False, message=message, data=None)
 
-@app.post('/api/solicitations') 
-def add_solicitation(solicitation: SolicitationDTO) -> None:
+@app.post('/api/solicitations')
+def add_solicitation(solicitation: SolicitationDTO) -> ResponseDTO[None]:
     try:
         create_solicitation(solicitation)
-        return success_response(message="Solicitação criada com sucesso.")
+        return success_response(data=None)
     except ValueError as e:
         print(f"Erro ao criar solicitação: {e}")
         return failed_response(message=str(e))
@@ -34,8 +34,8 @@ def get_solicitations() -> ResponseDTO[list[SolicitationDTO]]:
 @app.patch('/api/solicitations')
 def update_solicitation_status(solicitation_id: int, approved: bool) -> ResponseDTO[None]:
     try:
-        update_solicitation_status(solicitation_id, approved)
-        return success_response(message="Status da solicitação atualizado com sucesso.")
+        result = update_solicitation_status(solicitation_id, approved)
+        return success_response(data=result)
     except ValueError as e:
         print(f"Erro ao atualizar solicitação: {e}")
         return failed_response(message=str(e))
