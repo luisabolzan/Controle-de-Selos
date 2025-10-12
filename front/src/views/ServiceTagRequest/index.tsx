@@ -14,6 +14,8 @@ import DateRangeSelector from '../../components/DateRangeSelector';
 
 import { DateRangeValue, DateRangeError, DateRangeErrorMessage } from '../../components/DateRangeSelector/types';
 
+import {createServiceTagRequest} from '../../api/functions'  
+
 const ServiceTagRequest = () => {
 
     const isMinWidth = useMediaQuery('(min-width: 1480px)');
@@ -49,7 +51,11 @@ const ServiceTagRequest = () => {
         }
         
         console.log('Dados válidos! Enviando para o banco:', dateRange);
-        // ex: sendToApi(dateRange);
+        createServiceTagRequest({
+            startDate: dateToDdMmYyyy(dateRange.start),
+            endDate: dateToDdMmYyyy(dateRange.end),
+            userId: 1, // Substitua pelo ID do usuário real
+        });
     };
     
     const dateToDdMmYyyy = (date: Date | null): string => {
