@@ -1,11 +1,30 @@
 from fastapi import FastAPI
-from database_queries import create_solicitation, get_all_solicitations, update_solicitation_status
-from api_schemas import SolicitationDTO, TagDTO,  ResponseDTO
+from database_queries import create_service_tag_solicitation, get_all_solicitations, update_solicitation_status
+from api_schemas import ServiceTagSolicitationDTO, SolicitationDTO, TagDTO,  ResponseDTO
+from fastapi.middleware.cors import CORSMiddleware
 
 # Run this file with:
 # uvicorn routes:app --reload
 
 app = FastAPI()
+
+origins = [
+    "localhost:3000/service",
+    "http://localhost:3000/service",
+    "http://localhost:3000",
+    "localhost:3000",
+    "http://localhost:3000",
+    "http://192.168.0.103:3000",
+    "http://192.168.0.103:3000/service"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],    
+    allow_headers=["*"] 
+)
 
 def success_response(data: any) -> ResponseDTO:
     return ResponseDTO(success=True, data=data, message="success")
@@ -13,10 +32,10 @@ def success_response(data: any) -> ResponseDTO:
 def failed_response(message: str) -> ResponseDTO:
     return ResponseDTO(success=False, message=message, data=None)
 
-@app.post('/api/solicitations')
-def add_solicitation(solicitation: SolicitationDTO) -> ResponseDTO[None]:
+@app.post('/api/solicitations/service')
+def add_service_solicitation(solicitation: ServiceTagSolicitationDTO) -> ResponseDTO[None]:
     try:
-        create_solicitation(solicitation)
+        create_service_tag_solicitation(solicitation)
         return success_response(data=None)
     except ValueError as e:
         print(f"Erro ao criar solicitação: {e}")

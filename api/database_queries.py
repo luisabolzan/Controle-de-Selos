@@ -1,4 +1,4 @@
-from api_schemas import SolicitationDTO
+from api_schemas import ServiceTagSolicitationDTO
 from database_models import Solicitation
 from database_access import DatabaseAccess
 from sqlalchemy import func
@@ -7,13 +7,16 @@ from sqlalchemy import func
 db_access = DatabaseAccess()
 session = db_access.session
 
-def create_solicitation(solicitation: SolicitationDTO):
+def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO):
     new_solicitation = Solicitation(
-        vehicle_id=solicitation.vehicle_id,
-        user_id=solicitation.user_id,
         creation_date=func.now(),
         is_approved=False,
-        reviewed=False
+        reviewed=False,
+        start_date=solicitation.start_date,
+        end_date=solicitation.end_date,
+        solicited_tag_type='service',
+        vehicle_id=solicitation.vehicle_id,
+        user_id=solicitation.user_id
     )
     session.add(new_solicitation)
     session.commit()

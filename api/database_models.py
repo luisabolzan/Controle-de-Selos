@@ -54,10 +54,13 @@ class Solicitation(Base):
 
     solicitation_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     creation_date = Column(DateTime, default=datetime.now())
-    is_approved = Column(Boolean, nullable=True)
+    is_approved = Column(Boolean, default=False)
     reviewed = Column(Boolean, default=False)
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=False)
 
-    vehicle_id = Column(Integer, ForeignKey('vehicles.vehicle_id'), nullable=False)
+    solicited_tag_type = Column(Enum(TagTypes), nullable=False)
+    vehicle_id = Column(Integer, ForeignKey('vehicles.vehicle_id'), nullable=True)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
 
 class Loan(Base):
@@ -72,3 +75,20 @@ class Loan(Base):
     tag_id = Column(Integer, ForeignKey('tags.tag_id'), nullable=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.vehicle_id'), nullable=False)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
+
+
+if __name__ == "__main__":
+    
+        import os
+        from sqlalchemy import create_engine
+        from dotenv import load_dotenv
+        from sqlalchemy.orm import sessionmaker
+        
+        load_dotenv()
+        db_url = os.getenv("DATABASE_URL")
+
+        engine = create_engine(db_url)
+        session = sessionmaker(autocommit=False, autoflush=False, bind=engine)()
+        Base.metadata.create_all(bind=engine)
+    
+    
