@@ -110,7 +110,7 @@ export const GridCardsContainer = styled.div`
     width: 100%;
     height: 900px;
 
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 
 `
