@@ -16,8 +16,11 @@ export const verifyDateRange = (value: DateRangeValue): VerificationResult => {
   // Inicializa os objetos de retorno sem erros.
   const errors: DateRangeError = { start: false, end: false };
   const errorMessages: DateRangeErrorMessage = { start: '', end: '' };
-  
+
   const { start: startDate, end: endDate } = value;
+
+  startDate?.setHours(0,0,0,0);
+  endDate?.setHours(0,0,0,0);
 
   // --- Prepara as datas para comparação (zerando o tempo para evitar problemas de fuso horário) ---
   const today = new Date();
