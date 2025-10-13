@@ -4,6 +4,9 @@ from datetime import datetime
 
 T = TypeVar('T')
 
+class SolicitationApproval(BaseModel):
+    approval: bool
+
 class ResponseDTO(BaseModel, Generic[T]):
     success: bool
     data: Optional[T] = None

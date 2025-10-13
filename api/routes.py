@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from database_queries import create_service_tag_solicitation, get_all_solicitations, update_solicitation_status
-from api_schemas import ServiceTagSolicitationDTO, SolicitationDTO, TagDTO,  ResponseDTO
+from database_queries import create_service_tag_solicitation, get_all_solicitations, set_solicitation_approval_status
+from api_schemas import ServiceTagSolicitationDTO, SolicitationDTO, TagDTO,  ResponseDTO, SolicitationApproval
 from fastapi.middleware.cors import CORSMiddleware
 
 # Run this file with:
@@ -12,10 +12,10 @@ origins = [
     "localhost:3000/service",
     "http://localhost:3000/service",
     "http://localhost:3000",
-    "localhost:3000",
     "http://localhost:3000",
     "http://192.168.0.103:3000",
-    "http://192.168.0.103:3000/service"
+    "http://192.168.0.103:3000/service",
+    "http://localhost:3000/approve"
 ]
 
 app.add_middleware(
@@ -50,11 +50,11 @@ def get_solicitations() -> ResponseDTO[list[SolicitationDTO]]:
         print(f"Erro ao obter solicitações: {e}")
         return failed_response(message=str(e))
 
-@app.patch('/api/solicitations')
-def update_solicitation_status(solicitation_id: int, approved: bool) -> ResponseDTO[None]:
+@app.patch('/api/solicitations/{solicitation_id}')
+def update_solicitation_status(solicitation_id: int, body: SolicitationApproval) -> ResponseDTO[None]:
     try:
-        result = update_solicitation_status(solicitation_id, approved)
-        return success_response(data=result)
+        result = set_solicitation_approval_status(solicitation_id, body.approval)
+        return success_response(data=None)
     except ValueError as e:
         print(f"Erro ao atualizar solicitação: {e}")
         return failed_response(message=str(e))

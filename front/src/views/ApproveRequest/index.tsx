@@ -18,6 +18,8 @@ import { sleep } from "../../utils/functions";
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/DateRangeSelector/styles";
 
+import { updateSolicitationStatus } from "../../api/functions";
+
 interface Request {
     solicitation_id: string;
     creation_date: string;
@@ -84,9 +86,9 @@ const ApproveRequest = () => {
     const startIndexShowedRequests = requestsPerPage * (currentPage - 1);
     const showedRequests = requests.slice(startIndexShowedRequests, startIndexShowedRequests + requestsPerPage);
 
-    console.log("Total de solicitações recebidas:", requests.length);
-    console.log("Limite de itens por página:", requestsPerPage);
-    console.log("Itens que deveriam ser mostrados (showedRequests):", showedRequests.length);
+    //console.log("Total de solicitações recebidas:", requests.length);
+    //console.log("Limite de itens por página:", requestsPerPage);
+    //console.log("Itens que deveriam ser mostrados (showedRequests):", showedRequests.length);
 
     useEffect(() => {
         // Função que será chamada sempre que a janela for redimensionada
@@ -126,14 +128,16 @@ const ApproveRequest = () => {
     //================ USAR API FUNCTION ====================================================================
     //=======================================================================================================
     const approveSolicitation = async (solicitationId: string) => {
-       //fazer um post no banco associando este selo ao usuário logado
+        const id = parseInt(solicitationId);
+        await updateSolicitationStatus(id, true);
     };
 
     //=======================================================================================================
     //================ USAR API FUNCTION ====================================================================
     //=======================================================================================================
     const rejectSolicitation = async (solicitationId: string) => {
-       //fazer um update no banco retirando essa solicitação da lista de solicitações
+        const id = parseInt(solicitationId);
+        await updateSolicitationStatus(id, false);
     };
 
     /* Função para resetar toast de sucesso
@@ -255,7 +259,6 @@ const ApproveRequest = () => {
                         {requests.length == 0 && !isLoading && !error &&(
                             <h3> Não há solicitações pendentes </h3>
                         )}
-                        
                         <RequestCardsContainer>
 
                             {showedRequests.length > 0 && showedRequests.map((request) => (

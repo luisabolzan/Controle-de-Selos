@@ -23,7 +23,7 @@ def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO):
     print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
     return new_solicitation
 
-def update_solicitation_status(solicitation_id: int, approved: bool):
+def set_solicitation_approval_status(solicitation_id: int, approved: bool):
     solicitation = session.query(Solicitation).filter(Solicitation.solicitation_id == solicitation_id).first()
     if not solicitation:
         raise ValueError(f"Solicitação com ID {solicitation_id} não encontrada.")

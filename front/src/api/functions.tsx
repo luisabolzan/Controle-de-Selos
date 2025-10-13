@@ -23,8 +23,6 @@ export const createServiceTagRequest = async (data: { startDate: string; endDate
     }
 
     try {
-        console.log("Verificando a URL da API:", API_URL);
-        console.log(JSON.stringify(requestData));
         const response = await fetch(`${API_URL}/solicitations/service`, {
             method: REQUEST_METHODS.POST,
             headers: {
@@ -74,3 +72,32 @@ export const getAllSolicitations = async () => {
     }
 };
 
+export const updateSolicitationStatus = async (id: number, approval: boolean) => {
+
+    const parsedId = Number(id);
+
+    const data = { 
+        approval: approval,
+     };
+
+     console.log(data);
+     console.log(`${API_URL}/solicitations/${parsedId}`);
+
+    try {
+        const response = await fetch(`${API_URL}/solicitations/${parsedId}`, {
+            method: REQUEST_METHODS.PATCH,
+            headers: DEFAULT_HEADERS,
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Error updating solicitation status:', error);
+        throw error;
+    }
+};
