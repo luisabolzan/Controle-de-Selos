@@ -101,6 +101,8 @@ export const CardsContainer = styled.div`
 
     @media (max-width: 1230px) {
         flex-direction:column;
+        justify-content: center;
+        align-items: center;
     }
 `
 export const GridCardsContainer = styled.div`
@@ -110,9 +112,14 @@ export const GridCardsContainer = styled.div`
     width: 100%;
     height: 900px;
 
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 
+    @media (max-width: 1230px) {
+        height: auto;
+        justify-content: center;
+        align-items: center;
+    }
 `
 
 export const RequestCardsContainer = styled.div`
@@ -134,7 +141,9 @@ export const RequestCardsContainer = styled.div`
     }
 
     @media (max-width: 1230px) {
-      grid-template-columns: repeat(1, 1fr); 
+        grid-template-columns: repeat(1, 1fr); 
+        justify-items: center;
+
     }
 
 
