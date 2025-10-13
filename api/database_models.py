@@ -17,7 +17,6 @@ class Users(Base):
     name = Column(String(100), nullable=False)
     phone_number = Column(String(20), nullable=True)
     is_admin = Column(Boolean, default=False)
-    UFRGS_number = Column(String(50), nullable=True)
     has_active_request = Column(Boolean, default=False)
 
 class Vehicles(Base):
