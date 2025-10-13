@@ -1,5 +1,5 @@
 export interface IRequestFilter {
-  ngos: string[];
+  requests: string[];
   selectedTag: string;
   setSelectedTag: (state: string) => void;
   plate: string;

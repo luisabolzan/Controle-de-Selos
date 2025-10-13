@@ -80,8 +80,8 @@ const ServiceTagRequest = () => {
         try {
             // 'await' espera a requisição terminar
             const result = await createServiceTagRequest({
-                startDate: dateToDdMmYyyy(dateRange.start), // Formato correto
-                endDate: dateToDdMmYyyy(dateRange.end),   // Formato correto
+                startDate: dateToYyyyMmDd(dateRange.start), // Formato correto
+                endDate: dateToYyyyMmDd(dateRange.end),   // Formato correto
                 userId: 1, // Lembre-se de substituir pelo ID do usuário logado (useAuth)
             });
 
@@ -119,6 +119,12 @@ const ServiceTagRequest = () => {
     return `${day}/${month}/${year}`;
     };
 
+    const dateToYyyyMmDd = (date: Date | null): string => {
+        if (!date) return '';
+        // toISOString() retorna "2025-10-13T...". O split('T')[0] pega apenas a parte da data.
+        return date.toISOString().split('T')[0];
+    };
+
     return(
         <ServiceContainer>
             <SideBar/>
@@ -146,9 +152,6 @@ const ServiceTagRequest = () => {
 
                 <ButtonContainer>
                     <GenericButton flexStatus="none" width="100%" height="60px" buttonType="Red" content={isLoading ? 'Enviando...' : 'Solicitar Selo de Serviço'} onClick={handleSubmit} isDisabled={isLoading}/>
-                    {/* {!isMinWidth && ( 
-                    <GenericButton flexStatus="none" width="100%" height="60px" buttonType="Red" content={isLoading ? 'Enviando...' : 'Solicitar Selo de Serviço'} onClick={handleSubmit} isDisabled={isLoading}/>
-                    )} */}
                 </ButtonContainer>
 
                 {showToast && (

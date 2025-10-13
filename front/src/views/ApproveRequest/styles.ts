@@ -90,6 +90,7 @@ export const SubTitle = styled.div`
 export const CardsContainer = styled.div`
     display: flex;
     flex-direction:row;
+    width: 90%;
 
     box-sizing: border-box;
     padding-top: 50px;
@@ -98,6 +99,19 @@ export const CardsContainer = styled.div`
 
     justify-content: flex-start;
     align-items: flex-start;
+
+    @media (max-width: 1230px) {
+        flex-direction:column;
+    }
+`
+export const GridCardsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    justify-content: center;
+    align-items: center;
 
 `
 
@@ -110,5 +124,18 @@ export const RequestCardsContainer = styled.div`
     gap: 40px 40px;
 
     width: 100%;
+
+    @media (max-width: 1900px) {
+        grid-template-columns: repeat(3, 1fr); 
+    }
+
+    @media (max-width: 1612px) {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+
+    @media (max-width: 1230px) {
+      grid-template-columns: repeat(1, 1fr); 
+    }
+
 
 `

@@ -44,3 +44,33 @@ export const createServiceTagRequest = async (data: { startDate: string; endDate
         throw error;
     }
 };
+
+
+export const getAllSolicitations = async () => {
+    try {
+        const response = await fetch(`${API_URL}/solicitations`, {
+            method: REQUEST_METHODS.GET,
+            headers: DEFAULT_HEADERS,
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+
+        const result = await response.json();
+        
+        // O backend retorna um objeto { success: true, data: [...] }
+        // É uma boa prática retornar apenas os dados para o componente
+        if (result.success) {
+            return result.data;
+        } else {
+            // Se o backend responder com success: false, trata como um erro
+            throw new Error(result.message || 'Failed to fetch solicitations');
+        }
+
+    } catch (error) {
+        console.error('Error fetching solicitations:', error);
+        throw error;
+    }
+};
+

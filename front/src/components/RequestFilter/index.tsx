@@ -8,7 +8,7 @@ import ActionText from "../ActionText";
 import GenericButton from "../GenericButton";
 
 export default function RequestFilter({
-  ngos,
+  requests,
   selectedTag,
   setSelectedTag,
   plate,
