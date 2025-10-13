@@ -9,6 +9,8 @@ import Header from "../../components/Header";
 import RequestFilter from "../../components/RequestFilter";
 import RequestCard from "../../components/RequestCard";
 import PaginationButtons from "../../components/PaginationButtons";
+import ConfirmModal from "../../components/ConfirmModal";
+import Toast from "../../components/Toast";
 
 import { getAllSolicitations } from "../../api/functions";
 import { sleep } from "../../utils/functions";
@@ -27,6 +29,8 @@ interface Request {
     vehicle_id: string;
     user_id: string;
 }
+
+type ModalAction = { tipo: "aprovar" | "recusar"; solicitationId: string } | null;
 
 const ApproveRequest = () => {
 
@@ -76,7 +80,7 @@ const ApproveRequest = () => {
     const [requestsPerPage, setRequestsPerPage] = useState<number>(getRequestsPerPage());
     const [currentPage, setCurrentPage] = useState(1);
 
-    // Define as ONGs que serão mostradas com base na página atual
+    // Define as solicitações que serão mostradas com base na página atual
     const startIndexShowedRequests = requestsPerPage * (currentPage - 1);
     const showedRequests = requests.slice(startIndexShowedRequests, startIndexShowedRequests + requestsPerPage);
 
@@ -99,6 +103,121 @@ const ApproveRequest = () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+
+
+    // Estados para modais e toasts
+    const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [modalAction, setModalAction] = useState<ModalAction>(null);
+    
+    // Toast de sucesso
+    const [toastType, setToastType] = useState<"aprovar" | "recusar" | null>(null);
+    const [showToast, setShowToast] = useState(false);
+    const [toastVisible, setToastVisible] = useState(false);
+    
+    // Toast de erro
+    const [errorToast, setErrorToast] = useState<string | null>(null);
+    const [showErrorToast, setShowErrorToast] = useState(false);
+    const [errorToastVisible, setErrorToastVisible] = useState(false);
+
+
+    //=======================================================================================================
+    //================ USAR API FUNCTION ====================================================================
+    //=======================================================================================================
+    const approveSolicitation = async (solicitationId: string) => {
+       //fazer um post no banco associando este selo ao usuário logado
+    };
+
+    //=======================================================================================================
+    //================ USAR API FUNCTION ====================================================================
+    //=======================================================================================================
+    const rejectSolicitation = async (solicitationId: string) => {
+       //fazer um update no banco retirando essa solicitação da lista de solicitações
+    };
+
+    /* Função para resetar toast de sucesso
+    */
+    const resetToast = () => {
+        setToastVisible(false);
+
+        if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+        if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
+
+        setShowToast(false);
+        setToastType(null);
+    };
+
+    /**
+   * Função para mostrar toast de erro
+   */
+    const showErrorToastMessage = (message: string) => {
+        setErrorToast(message);
+        setShowErrorToast(true);
+        setErrorToastVisible(true);
+
+        // Auto-hide após 4 segundos
+        setTimeout(() => {
+        setErrorToastVisible(false);
+        setTimeout(() => {
+            setShowErrorToast(false);
+            setErrorToast(null);
+        }, 300);
+        }, 4000);
+    };
+
+    /**
+     * Função para mostrar toast de sucesso
+     */
+    const showSuccessToast = (tipo: "aprovar" | "recusar") => {
+        resetToast();
+        setToastType(tipo);
+        setShowToast(true);
+
+        showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+        hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+        fullCloseTimeoutRef.current = setTimeout(() => {
+        setShowToast(false);
+        setToastType(null);
+        }, 3500);
+    };
+
+    /**
+     * Abrir modal (e fechar toast se estiver aberto)
+     */
+    const openModal = (tipo: "aprovar" | "recusar", solicitationId: string) => {
+        resetToast();
+        setModalAction({ tipo, solicitationId: solicitationId });
+    };
+
+    /**
+     * Confirmar ação - VERSÃO CORRIGIDA
+     */
+    const handleConfirm = async () => {
+        if (!modalAction) return;
+
+        try {
+        if (modalAction.tipo === "aprovar") {
+            await approveSolicitation(modalAction.solicitationId);
+        } else if (modalAction.tipo === "recusar") {
+            await rejectSolicitation(modalAction.solicitationId);
+        }
+        showSuccessToast(modalAction.tipo);
+
+        } catch (error) {
+        // Se der erro, mostra toast de erro
+        console.error("Erro na operação:", error);
+        
+        const errorMessage = modalAction.tipo === "aprovar" 
+            ? "Erro ao aprovar Solicitação. Tente novamente." 
+            : "Erro ao rejeitar Solicitação. Tente novamente.";
+        
+        showErrorToastMessage(errorMessage);
+        } finally {
+        setModalAction(null);
+        }
+    };
 
     return(
         <ServiceContainer>
@@ -144,10 +263,60 @@ const ApproveRequest = () => {
                                     key={request.solicitation_id}
                                     request={request}
                                     showApproveButtons={true}
-                                    onApproveClick={() => navigate("/")} //irei substituir pelo modal de aprovação
-                                    onRejectClick={() => navigate("/")}
+                                    onApproveClick={() => openModal("aprovar", request.solicitation_id)}
+                                    onRejectClick={() => openModal("recusar", request.solicitation_id)}
                                 />
                             ))}
+
+                            {/* Modal de Confirmação */}
+                            <ConfirmModal
+                            isOpen={modalAction !== null}
+                            title={
+                                modalAction?.tipo === "aprovar"
+                                ? "Tem certeza que deseja aprovar esta solicitação?"
+                                : "Tem certeza que deseja recusar esta solicitação?"
+                            }
+                            message={
+                                modalAction?.tipo === "aprovar"
+                                ? "Tem certeza de que deseja aprovar este selo? Caso este selo não possa ser entregue ao usário você pode redefinir o status da solicitação em solicitações concluidas"
+                                : "Uma vez recusada, a solicitação sairá da lista de avaliação."
+                            }
+                            confirmLabel={modalAction?.tipo === "aprovar" ? "Sim, Aprovar" : "Sim, Recusar"}
+                            cancelLabel="Cancelar"
+                            onConfirm={handleConfirm}
+                            onClose={() => setModalAction(null)}
+                            />
+
+                            {/* Toast de Sucesso */}
+                            {showToast && toastType && (
+                            <Toast
+                                type="success"
+                                message={`Solicitação ${toastType === "aprovar" ? "aprovada" : "recusada"} com sucesso!`}
+                                description={`${toastType === "aprovar" ? "Confirme o recebimento na retirada" : "Status de solicitação atualizado"}`}
+                                onClose={() => {
+                                setToastVisible(false);
+                                setTimeout(() => setShowToast(false), 300);
+                                }}
+                                isVisible={toastVisible}
+                            />
+                            )}
+
+                            {/* Toast de Erro */}
+                            {showErrorToast && errorToast && (
+                            <Toast
+                                type="error"
+                                message="Erro na operação"
+                                description={errorToast}
+                                onClose={() => {
+                                setErrorToastVisible(false);
+                                setTimeout(() => {
+                                    setShowErrorToast(false);
+                                    setErrorToast(null);
+                                }, 300);
+                                }}
+                                isVisible={errorToastVisible}
+                            />
+                            )}
 
                         </RequestCardsContainer>
 

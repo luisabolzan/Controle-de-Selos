@@ -94,7 +94,6 @@ export const CardsContainer = styled.div`
 
     box-sizing: border-box;
     padding-top: 50px;
-    padding-bottom: 150px;
     gap: 50px;
 
     justify-content: flex-start;
@@ -109,6 +108,7 @@ export const GridCardsContainer = styled.div`
     flex-direction: column;
 
     width: 100%;
+    height: 900px;
 
     justify-content: center;
     align-items: center;
