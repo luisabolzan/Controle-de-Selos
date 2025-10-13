@@ -78,13 +78,14 @@ const ServiceTagRequest = () => {
         setIsLoading(true); // Inicia o feedback de carregamento
         await sleep(1000);
         try {
-            // ✨ 'await' espera a requisição terminar ✨
+            // 'await' espera a requisição terminar
             const result = await createServiceTagRequest({
                 startDate: dateToDdMmYyyy(dateRange.start), // Formato correto
                 endDate: dateToDdMmYyyy(dateRange.end),   // Formato correto
                 userId: 1, // Lembre-se de substituir pelo ID do usuário logado (useAuth)
             });
 
+            //mostra toast de selo solicitado com sucesso
             resetToast();
             setShowToast(true);
 
@@ -100,13 +101,11 @@ const ServiceTagRequest = () => {
             }, 2000);
 
         } catch (error) {
-            // ✨ O 'catch' agora vai funcionar corretamente ✨
             console.error('Falha ao criar a solicitação:', error);
             // Mostra uma mensagem de erro genérica para o usuário
             setErrorMessage('Ocorreu um erro ao enviar sua solicitação. Tente novamente.');
         
         } finally {
-            // ✨ O bloco 'finally' sempre executa, com ou sem erro ✨
             setIsLoading(false); // Para o feedback de carregamento
         }
     };
@@ -146,7 +145,10 @@ const ServiceTagRequest = () => {
                 </FormContainer>
 
                 <ButtonContainer>
-                    <GenericButton width="100%" height="60px" buttonType="Red" content={isLoading ? 'Enviando...' : 'Solicitar Selo de Serviço'} onClick={handleSubmit} isDisabled={isLoading}/>
+                    <GenericButton flexStatus="none" width="100%" height="60px" buttonType="Red" content={isLoading ? 'Enviando...' : 'Solicitar Selo de Serviço'} onClick={handleSubmit} isDisabled={isLoading}/>
+                    {/* {!isMinWidth && ( 
+                    <GenericButton flexStatus="none" width="100%" height="60px" buttonType="Red" content={isLoading ? 'Enviando...' : 'Solicitar Selo de Serviço'} onClick={handleSubmit} isDisabled={isLoading}/>
+                    )} */}
                 </ButtonContainer>
 
                 {showToast && (

@@ -85,36 +85,17 @@ export const SubTitle = styled.div`
 
 `
 
-export const FormContainer = styled.div`
+export const CardsContainer = styled.div`
     display: flex;
-    flex-direction:column;
+    flex-direction:row;
 
     width: 90%;
-    height: 350px;
+    height: 700px;
 
     box-sizing: border-box;
     padding-top: 50px;
     gap: 20px;
 
     justify-content: top;
-
-`
-
-export const ButtonContainer = styled.div`
-    display: flex;
-    flex-direction:row;
-
-    width: 90%;
-    height: 70px;
-
-    box-sizing: border-box;
-    padding-left: 55vw;
-
-    align-items:center;
-    justify-content: right;
-
-    @media (max-width: 1480px) {
-        padding:0;
-    }
 
 `
