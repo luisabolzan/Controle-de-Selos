@@ -72,9 +72,9 @@ const ApproveRequest = () => {
 
 
     const getRequestsPerPage = () => {
-        if (window.innerWidth >= 1612) return 8;
-        else if (window.innerWidth >= 800) return 6;
-        else return 5;
+        if (window.innerWidth >= 1900) return 8;
+        else if (window.innerWidth >= 1612) return 6;
+        else return 4;
     };
 
     const [requestsPerPage, setRequestsPerPage] = useState<number>(getRequestsPerPage());
