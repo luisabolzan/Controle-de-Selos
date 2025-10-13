@@ -53,7 +53,7 @@ const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: bo
   }
 
   @media (max-width: 1480px) {
-    flex:none;
+    ${(props) => props.$flex ? 'flex:1;' : 'flex:none;'};
   }
 
 `;

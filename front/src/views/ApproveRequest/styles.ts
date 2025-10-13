@@ -6,6 +6,8 @@ export const Container = styled.div `
     display: flex;
     flex-direction: column;
 
+    box-sizing: border-box;
+
     width: 100%;
     min-width: 360px;
     min-height: 100vh;  
@@ -89,13 +91,24 @@ export const CardsContainer = styled.div`
     display: flex;
     flex-direction:row;
 
-    width: 90%;
-    height: 700px;
-
     box-sizing: border-box;
     padding-top: 50px;
-    gap: 20px;
+    padding-bottom: 150px;
+    gap: 50px;
 
-    justify-content: top;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+`
+
+export const RequestCardsContainer = styled.div`
+
+    box-sizing: border-box;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 40px 40px;
+
+    width: 100%;
 
 `

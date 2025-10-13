@@ -120,7 +120,7 @@ export default function RequestFilter({
           width="100%" 
           fontSize="1.125em" 
           onClick={handleClearFilters} 
-          textColor="#553525" 
+          textColor="#000000" 
           underlineOnHover
         >
           Limpar Filtros
