@@ -125,7 +125,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
             fontWeight="800"
             flexStatus="1"
             $flex={true}
-            isDisabled = {request.is_approved}
+            isDisabled = {request.reviewed}
           />
           <GenericButton
             buttonType="Red"
@@ -136,7 +136,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
             fontWeight="800"            
             flexStatus="1"
             $flex={true}
-            isDisabled = {request.is_approved}
+            isDisabled = {request.reviewed}
           />
         </RequestApproveButtonWrapper>
       )}
