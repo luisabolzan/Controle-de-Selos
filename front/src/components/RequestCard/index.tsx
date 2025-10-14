@@ -86,16 +86,19 @@ const RequestCard: React.FC<RequestCardProps> = ({
       <Cabecalho>
         <RequestTextGroup>
           <RequestName>{request?.user?.name || "Nome não informado"}</RequestName>
-          <RequestType>{request?.solicited_tag_type || "Tipo de selo não informado"}</RequestType>
+          <RequestType>{request?.solicited_tag_type == 'temp' ? 'Credencial Provisória' : 
+                        request?.solicited_tag_type == 'eventual' ? 'Liberação Eventual' :
+                        request?.solicited_tag_type == 'service' ? 'Selo de Serviço' :
+                        'Selo não informado'}</RequestType>
         </RequestTextGroup>
 
       </Cabecalho>
 
       <InfoSection>
         {requestInfo.map((info, i) => (
-          info != "" && (<DataItem key={i}>
+          (<DataItem key={i}>
             <img src={requestIcons[i]} alt="" />
-            <p>{info}</p>
+            <p>{info ? info : "Indisponível"}</p>
           </DataItem>)
         ))}
         
@@ -122,6 +125,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
             fontWeight="800"
             flexStatus="1"
             $flex={true}
+            isDisabled = {request.is_approved}
           />
           <GenericButton
             buttonType="Red"
@@ -132,6 +136,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
             fontWeight="800"            
             flexStatus="1"
             $flex={true}
+            isDisabled = {request.is_approved}
           />
         </RequestApproveButtonWrapper>
       )}

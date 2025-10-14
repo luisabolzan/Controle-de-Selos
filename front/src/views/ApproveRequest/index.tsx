@@ -36,9 +36,7 @@ const ApproveRequest = () => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-
-        const fetchRequests = async () => {
+    const fetchRequests = async () => {
         try {
 
             setIsLoading(true); // Inicia o feedback de carregamento
@@ -56,8 +54,9 @@ const ApproveRequest = () => {
             // Este bloco sempre executa, com ou sem erro
             setIsLoading(false); // Termina o estado de carregamento
         }
-        };
+    };
 
+    useEffect(() => {
         fetchRequests(); // Executa a função de busca
     }, []); // O array vazio [] garante que isso rode apenas uma vez, quando o componente é montado
 
@@ -196,6 +195,9 @@ const ApproveRequest = () => {
         } else if (modalAction.tipo === "recusar") {
             await rejectSolicitation(modalAction.solicitationId);
         }
+
+        await fetchRequests(); 
+
         showSuccessToast(modalAction.tipo);
 
         } catch (error) {
