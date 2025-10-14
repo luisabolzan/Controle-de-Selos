@@ -30,8 +30,22 @@ class SolicitationDTO(BaseModel):
     solicited_tag_type: str
     vehicle_id: Optional[int] = None
     user_id: int
+    vehicle: Optional['VehicleDTO'] = None
+    user: 'UserDTO' = None
 
 class TagDTO(BaseModel):
     tag_id: int
     tag_type: str
 
+class VehicleDTO(BaseModel):
+    vehicle_id: int
+    plate: str
+    model: Optional[str] = None
+    color: Optional[str] = None
+
+class UserDTO(BaseModel):
+    user_id: int
+    name: str
+    email: str
+    UFRGS_number: str
+    has_active_request: bool
