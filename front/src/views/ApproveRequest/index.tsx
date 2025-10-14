@@ -73,6 +73,12 @@ const ApproveRequest = () => {
     // Define as solicitações que serão mostradas com base na página atual
     const startIndexShowedRequests = requestsPerPage * (currentPage - 1);
     const showedRequests = requests.slice(startIndexShowedRequests, startIndexShowedRequests + requestsPerPage);
+    const filteredRequests = showedRequests.filter((request) => {
+        const matchesTag = selectedTag ? request.solicited_tag_type === selectedTag : true;
+        const matchesPlate = plate && request.vehicle.plate ? request.vehicle.plate.toLowerCase().includes(plate.toLowerCase()) : true;
+        const matchesName = name ? request.user.name.toLowerCase().includes(name.toLowerCase()) : true;
+        return matchesTag && matchesPlate && matchesName;
+    });
 
     //console.log("Total de solicitações recebidas:", requests.length);
     //console.log("Limite de itens por página:", requestsPerPage);
@@ -214,6 +220,17 @@ const ApproveRequest = () => {
         }
     };
 
+    const handleSearch = (filters: { name: string; plate: string; state: string }) => {
+        setSelectedTag(filters.state);
+        setPlate(filters.plate);
+        setName(filters.name);
+    }
+
+    const handleClearFilters = () => {
+        setSelectedTag("");
+        setPlate("");
+        setName("");
+    }
     return(
         <ServiceContainer>
             <SideBar/>
@@ -235,6 +252,8 @@ const ApproveRequest = () => {
                         setPlate={setPlate}
                         name={name}
                         setName={setName}
+                        onSearch={handleSearch}
+                        onClearFilters={handleClearFilters}
                     />
 
                     <GridCardsContainer>
@@ -252,7 +271,7 @@ const ApproveRequest = () => {
                         )}
                         <RequestCardsContainer>
 
-                            {showedRequests.length > 0 && showedRequests.map((request) => (
+                            {filteredRequests.length > 0 && filteredRequests.map((request) => (
                                 <RequestCard
                                     key={request.solicitation_id}
                                     request={request}
