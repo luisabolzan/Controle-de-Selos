@@ -35,11 +35,9 @@ def set_solicitation_approval_status(solicitation_id: int, approved: bool):
     return solicitation
 
 def get_all_solicitations():
-    solicitations = session
-        .query(Solicitation)
-        .options(
-            joinedload(Solicitation.vehicle), 
-            joinedload(Solicitation.user))
-        .all()
+    solicitations = session.query(Solicitation).options(
+            joinedload(Solicitation.vehicle),
+            joinedload(Solicitation.user)
+        ).all()
     session.commit()
     return solicitations

@@ -47,5 +47,4 @@ class UserDTO(BaseModel):
     user_id: int
     name: str
     email: str
-    UFRGS_number: str
     has_active_request: bool

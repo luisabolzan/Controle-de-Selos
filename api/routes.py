@@ -34,6 +34,7 @@ def failed_response(message: str) -> ResponseDTO:
 
 @app.post('/api/solicitations/service')
 def add_service_solicitation(solicitation: ServiceTagSolicitationDTO) -> ResponseDTO[None]:
+    print(solicitation)
     try:
         create_service_tag_solicitation(solicitation)
         return success_response(data=None)

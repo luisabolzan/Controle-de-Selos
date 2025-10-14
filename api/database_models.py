@@ -1,5 +1,5 @@
 from sqlalchemy import (Column, Integer, String, Boolean, DateTime, ForeignKey, Enum)
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 import enum
 
@@ -61,6 +61,9 @@ class Solicitation(Base):
     solicited_tag_type = Column(Enum(TagTypes), nullable=False)
     vehicle_id = Column(Integer, ForeignKey('vehicles.vehicle_id'), nullable=True)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
+
+    vehicle = relationship("Vehicles")
+    user = relationship("Users")
 
 class Loan(Base):
     __tablename__ = 'loans'
