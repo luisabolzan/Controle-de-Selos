@@ -40,7 +40,6 @@ export default function RequestFilter({
       state: selectedTag
     };
     
-    console.log('🔍 Aplicando filtros:', filters);
     onSearch?.(filters);
   };
 
@@ -49,7 +48,6 @@ export default function RequestFilter({
     setPlate("");
     setName("");
     
-    console.log('🧹 Limpando filtros');
     onClearFilters?.();
   };
 
