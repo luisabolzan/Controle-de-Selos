@@ -33,7 +33,6 @@ const RequestCard: React.FC<RequestCardProps> = ({
   onDeleteClick,
   selected = false,
 }) => {
-
   const navigate = useNavigate();
 
   const [hovered, setHovered] = useState(false);
@@ -69,12 +68,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
     request?.vehicle?.plate || "",
   ];
 
-  const requestIcons = [
-    Location,
-    Id,
-    Phone,
-    Email
-  ];
+  const requestIcons = [Location, Id, Phone, Email];
 
   return (
     <CardContainer
@@ -85,36 +79,45 @@ const RequestCard: React.FC<RequestCardProps> = ({
     >
       <Cabecalho>
         <RequestTextGroup>
-          <RequestName>{request?.user?.name || "Nome não informado"}</RequestName>
-          <RequestType>{request?.solicited_tag_type == 'temp' ? 'Credencial Provisória' : 
-                        request?.solicited_tag_type == 'eventual' ? 'Liberação Eventual' :
-                        request?.solicited_tag_type == 'service' ? 'Selo de Serviço' :
-                        'Selo não informado'}</RequestType>
+          <RequestName>
+            {request?.user?.name || "Nome não informado"}
+          </RequestName>
+          <RequestType>
+            {request?.solicited_tag_type == "temp"
+              ? "Credencial Provisória"
+              : request?.solicited_tag_type == "eventual"
+              ? "Liberação Eventual"
+              : request?.solicited_tag_type == "service"
+              ? "Selo de Serviço"
+              : "Selo não informado"}
+          </RequestType>
         </RequestTextGroup>
-
       </Cabecalho>
 
       <InfoSection>
         {requestInfo.map((info, i) => (
-          (<DataItem key={i}>
+          <DataItem key={i}>
             <img src={requestIcons[i]} alt="" />
             <p>{info ? info : "Indisponível"}</p>
-          </DataItem>)
+          </DataItem>
         ))}
-        
-        <ActionText 
-          width="auto" 
-          fontSize="1.125em" 
-          onClick={()=>navigate("/")} 
-          textColor="#000000" 
+
+        {request?.reviewed && (
+          <p>{request?.is_approved ? "Aprovado" : "Rejeitado"}</p>
+        )}
+
+        <ActionText
+          width="auto"
+          fontSize="1.125em"
+          onClick={() => navigate("/")}
+          textColor="#000000"
           underlineOnHover
         >
           <h2>Saber Mais</h2>
         </ActionText>
-
       </InfoSection>
 
-      {showApproveButtons && request &&(
+      {showApproveButtons && request && (
         <RequestApproveButtonWrapper>
           <GenericButton
             buttonType="Transparent"
@@ -125,7 +128,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
             fontWeight="800"
             flexStatus="1"
             $flex={true}
-            isDisabled = {request.reviewed}
+            isDisabled={request.reviewed}
           />
           <GenericButton
             buttonType="Red"
@@ -133,10 +136,10 @@ const RequestCard: React.FC<RequestCardProps> = ({
             onClick={() => onApproveClick?.(request)}
             height="30px"
             fontSize="1em"
-            fontWeight="800"            
+            fontWeight="800"
             flexStatus="1"
             $flex={true}
-            isDisabled = {request.reviewed}
+            isDisabled={request.reviewed}
           />
         </RequestApproveButtonWrapper>
       )}
