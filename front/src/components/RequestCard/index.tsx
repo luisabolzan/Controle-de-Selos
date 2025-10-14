@@ -23,27 +23,6 @@ import ActionText from "../ActionText";
 
 import { useNavigate } from "react-router-dom";
 
-interface Vehicle {
-    vehicle_id: string;
-    plate: string;
-    model: string;
-    color: string;
-}
-
-interface User {
-    user_id: string;
-    password_hash: string;
-
-    cpf: string;
-    email: string;
-    name: string;
-    phone_number: string;
-    is_admin: boolean;
-    UFRGS_number: string;
-    has_active_request: boolean;
-}
-
-
 const RequestCard: React.FC<RequestCardProps> = ({
   request,
   showApproveButtons = false,
@@ -59,36 +38,35 @@ const RequestCard: React.FC<RequestCardProps> = ({
 
   const [hovered, setHovered] = useState(false);
 
-  // ===================== API ==================================================================================
-  //constante usado para testar precisa usar um fetch da API para busaca o veiculo relacionado a esta solicitação
-  const mockVehicle: Vehicle = {
-        vehicle_id: '1',
-        plate: 'ABC1D23',
-        model: 'HB20',
-        color: 'Branco'
-  };
+  // // ===================== API ==================================================================================
+  // //constante usado para testar precisa usar um fetch da API para busaca o veiculo relacionado a esta solicitação
+  // const mockVehicle: Vehicle = {
+  //       vehicle_id: '1',
+  //       plate: 'ABC1D23',
+  //       model: 'HB20',
+  //       color: 'Branco'
+  // };
 
-  // ===================== API ==================================================================================
-  //constante usado para testar precisa usar um fetch da API para buscar o user relacionado a esta solicitação
-  const mockUser: User = {
-    user_id: '1',
-    password_hash: 'jskajskajskakak',
-    cpf: '00011122234',
-    email: 'teste@gmail.com',
-    name: 'Lucineia',
-    phone_number: '77777-7777',
-    is_admin: true,
-    UFRGS_number: '00123456',
-    has_active_request: true
-  }
-
+  // // ===================== API ==================================================================================
+  // //constante usado para testar precisa usar um fetch da API para buscar o user relacionado a esta solicitação
+  // const mockUser: User = {
+  //   user_id: '1',
+  //   password_hash: 'jskajskajskakak',
+  //   cpf: '00011122234',
+  //   email: 'teste@gmail.com',
+  //   name: 'Lucineia',
+  //   phone_number: '77777-7777',
+  //   is_admin: true,
+  //   UFRGS_number: '00123456',
+  //   has_active_request: true
+  // }
 
   // Criar array com informações da Request baseado nos dados recebidos
   const requestInfo = [
     request?.start_date || "",
     request?.end_date || "",
-    mockVehicle?.model || "",
-    mockVehicle?.plate || "",
+    request?.vehicle?.model || "",
+    request?.vehicle?.plate || "",
   ];
 
   const requestIcons = [
@@ -107,7 +85,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
     >
       <Cabecalho>
         <RequestTextGroup>
-          <RequestName>{mockUser?.name || "Nome não informado"}</RequestName>
+          <RequestName>{request?.user?.name || "Nome não informado"}</RequestName>
           <RequestType>{request?.solicited_tag_type || "Tipo de selo não informado"}</RequestType>
         </RequestTextGroup>
 

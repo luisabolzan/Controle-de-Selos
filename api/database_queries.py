@@ -2,7 +2,7 @@ from api_schemas import ServiceTagSolicitationDTO
 from database_models import Solicitation
 from database_access import DatabaseAccess
 from sqlalchemy import func
-
+from sqlalchemy.orm import joinedload, selectinload
 
 db_access = DatabaseAccess()
 session = db_access.session
@@ -35,6 +35,11 @@ def set_solicitation_approval_status(solicitation_id: int, approved: bool):
     return solicitation
 
 def get_all_solicitations():
-    solicitations = session.query(Solicitation).all()
+    solicitations = session
+        .query(Solicitation)
+        .options(
+            joinedload(Solicitation.vehicle), 
+            joinedload(Solicitation.user))
+        .all()
     session.commit()
     return solicitations

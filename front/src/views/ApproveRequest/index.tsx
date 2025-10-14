@@ -19,18 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/DateRangeSelector/styles";
 
 import { updateSolicitationStatus } from "../../api/functions";
-
-interface Request {
-    solicitation_id: string;
-    creation_date: string;
-    is_approved: boolean;
-    reviewed: boolean
-    start_date: string;
-    end_date: string;
-    solicited_tag_type: string; 
-    vehicle_id: string;
-    user_id: string;
-}
+import { Request } from "../../components/RequestCard/types";
 
 type ModalAction = { tipo: "aprovar" | "recusar"; solicitationId: string } | null;
 
