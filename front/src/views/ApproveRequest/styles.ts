@@ -6,6 +6,8 @@ export const Container = styled.div `
     display: flex;
     flex-direction: column;
 
+    box-sizing: border-box;
+
     width: 100%;
     min-width: 360px;
     min-height: 100vh;  
@@ -85,36 +87,64 @@ export const SubTitle = styled.div`
 
 `
 
-export const FormContainer = styled.div`
+export const CardsContainer = styled.div`
     display: flex;
-    flex-direction:column;
-
+    flex-direction:row;
     width: 90%;
-    height: 350px;
 
     box-sizing: border-box;
     padding-top: 50px;
-    gap: 20px;
+    gap: 50px;
 
-    justify-content: top;
+    justify-content: flex-start;
+    align-items: flex-start;
 
+    @media (max-width: 1230px) {
+        flex-direction:column;
+        justify-content: center;
+        align-items: center;
+    }
+`
+export const GridCardsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: 900px;
+
+    justify-content: space-between;
+    align-items: center;
+
+    @media (max-width: 1230px) {
+        height: auto;
+        justify-content: center;
+        align-items: center;
+    }
 `
 
-export const ButtonContainer = styled.div`
-    display: flex;
-    flex-direction:row;
-
-    width: 90%;
-    height: 70px;
+export const RequestCardsContainer = styled.div`
 
     box-sizing: border-box;
-    padding-left: 55vw;
 
-    align-items:center;
-    justify-content: right;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 40px 40px;
 
-    @media (max-width: 1480px) {
-        padding:0;
+    width: 100%;
+
+    @media (max-width: 1900px) {
+        grid-template-columns: repeat(3, 1fr); 
     }
+
+    @media (max-width: 1612px) {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+
+    @media (max-width: 1230px) {
+        grid-template-columns: repeat(1, 1fr); 
+        justify-items: center;
+
+    }
+
 
 `

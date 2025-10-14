@@ -23,8 +23,6 @@ export const createServiceTagRequest = async (data: { startDate: string; endDate
     }
 
     try {
-        console.log("Verificando a URL da API:", API_URL);
-        console.log(JSON.stringify(requestData));
         const response = await fetch(`${API_URL}/solicitations/service`, {
             method: REQUEST_METHODS.POST,
             headers: {
@@ -41,6 +39,65 @@ export const createServiceTagRequest = async (data: { startDate: string; endDate
         return result;
     } catch (error) {
         console.error('Error creating service tag request:', error);
+        throw error;
+    }
+};
+
+
+export const getAllSolicitations = async () => {
+    try {
+        const response = await fetch(`${API_URL}/solicitations`, {
+            method: REQUEST_METHODS.GET,
+            headers: DEFAULT_HEADERS,
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+
+        const result = await response.json();
+        
+        // O backend retorna um objeto { success: true, data: [...] }
+        // É uma boa prática retornar apenas os dados para o componente
+        if (result.success) {
+            return result.data;
+        } else {
+            // Se o backend responder com success: false, trata como um erro
+            throw new Error(result.message || 'Failed to fetch solicitations');
+        }
+
+    } catch (error) {
+        console.error('Error fetching solicitations:', error);
+        throw error;
+    }
+};
+
+export const updateSolicitationStatus = async (id: number, approval: boolean) => {
+
+    const parsedId = Number(id);
+
+    const data = { 
+        approval: approval,
+     };
+
+     console.log(data);
+     console.log(`${API_URL}/solicitations/${parsedId}`);
+
+    try {
+        const response = await fetch(`${API_URL}/solicitations/${parsedId}`, {
+            method: REQUEST_METHODS.PATCH,
+            headers: DEFAULT_HEADERS,
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Error updating solicitation status:', error);
         throw error;
     }
 };

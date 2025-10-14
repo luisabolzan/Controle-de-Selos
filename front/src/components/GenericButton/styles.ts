@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: boolean; $paddingV?: string; $paddingH?: string}>`
+const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: boolean; $paddingV?: string; $paddingH?: string; $flexStatus?:string; $fontSize?: string; $fontWeight?:string}>`
   font-family: "Nunito Sans", sans-serif;
   font-weight: 500;
   font-size: clamp(35px, 1vw, 15px);
@@ -12,15 +12,22 @@ const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: bo
   box-sizing: border-box;
 
   display: flex;
-  flex: 1;
+  flex: ${(props)=>props.$flexStatus};
   justify-content: center;
   align-items: center;
   white-space:nowrap;
+
+  width: ${(props) =>
+  props.$flex ? "100%" : props.$width || "auto"}; 
+  ${(props) => props.$flex && "flex: 1;"};
 
   height: ${(props) => props.$height || 'auto'};
   min-height: 34px;
 
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+
+  font-size:  ${(props)=>props.$fontSize};
+  font-weight:  ${(props)=>props.$fontWeight};;
 
   &:disabled {
     background-color: #D7D6D6;
@@ -46,10 +53,7 @@ const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: bo
   }
 
   @media (max-width: 1480px) {
-    flex:none;
-    width: ${(props) =>
-    props.$flex ? "100%" : props.$width || "auto"}; 
-    ${(props) => props.$flex && "flex: 1;"};
+    ${(props) => props.$flex ? 'flex:1;' : 'flex:none;'};
   }
 
 `;

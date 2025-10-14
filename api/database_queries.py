@@ -2,7 +2,7 @@ from api_schemas import ServiceTagSolicitationDTO
 from database_models import Solicitation
 from database_access import DatabaseAccess
 from sqlalchemy import func
-
+from sqlalchemy.orm import joinedload, selectinload
 
 db_access = DatabaseAccess()
 session = db_access.session
@@ -23,7 +23,7 @@ def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO):
     print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
     return new_solicitation
 
-def update_solicitation_status(solicitation_id: int, approved: bool):
+def set_solicitation_approval_status(solicitation_id: int, approved: bool):
     solicitation = session.query(Solicitation).filter(Solicitation.solicitation_id == solicitation_id).first()
     if not solicitation:
         raise ValueError(f"Solicitação com ID {solicitation_id} não encontrada.")
@@ -35,6 +35,9 @@ def update_solicitation_status(solicitation_id: int, approved: bool):
     return solicitation
 
 def get_all_solicitations():
-    solicitations = session.query(Solicitation).all()
+    solicitations = session.query(Solicitation).options(
+            joinedload(Solicitation.vehicle),
+            joinedload(Solicitation.user)
+        ).all()
     session.commit()
     return solicitations
