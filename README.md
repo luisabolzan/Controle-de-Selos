@@ -1,3 +1,5 @@
+![Testes Automatizados](https://github.com/luisabolzan/Controle-de-Selos/actions/workflows/ci.yml/badge.svg)
+
 # Controle-de-Selos
 
 Este projeto foi desenvolvido como uma solução para modernizar o controle de selos de estacionamento da UFRGS, que atualmente depende de registros em papel e planilhas manuais. O objetivo principal é criar um sistema centralizado e digital para gerenciar a distribuição dos selos de forma eficiente e segura. 
