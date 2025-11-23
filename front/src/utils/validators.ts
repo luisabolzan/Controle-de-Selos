@@ -66,3 +66,34 @@ export const verifyDateRange = (value: DateRangeValue): VerificationResult => {
 
   return { errors, errorMessages };
 };
+
+
+interface ValidationResult {
+  hasError: boolean;
+  errorMessage: string;
+}
+
+export const validatePassword = (password: string): ValidationResult => {
+  if (password.trim() === '') {
+    return { hasError: false, errorMessage: '' };
+  }
+
+  if (password.length < 6) {
+    return { hasError: true, errorMessage: 'A senha deve ter pelo menos 6 caracteres' };
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    return { hasError: true, errorMessage: 'A senha deve ter pelo menos uma letra maiúscula' };
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return { hasError: true, errorMessage: 'A senha deve ter pelo menos um número' };
+  }
+
+  if (!/[!@#$%^&*]/.test(password)) {
+    return { hasError: true, errorMessage: 'A senha deve ter pelo menos um caractere especial' };
+  }
+
+  // Se passou por tudo, é válida
+  return { hasError: false, errorMessage: '' };
+};

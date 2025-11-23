@@ -28,8 +28,7 @@ export const StyledInput = styled.input<{
 
   &:focus {
     outline: none;
-    border: ${({ $error, $inputType }) =>
-      $error ? "1px solid #FF3B30" : $inputType === "Primário" ? "1px solid #706D6D" : "1px solid #706D6D"};
+    border: ${({ $error, $inputType }) => $error? "2px solid #FF3B30" : "1px solid #000000"};
   }
 `;
 

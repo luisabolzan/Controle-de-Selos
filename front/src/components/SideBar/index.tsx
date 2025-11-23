@@ -2,7 +2,7 @@ import React from "react";
 import { SideBarProps } from "./types";
 import { LogoImage, SideBarContainer } from "./styles";
 import { Menu } from 'lucide-react';
-import LogoINF from "../../assets/marca-negativa-removebg-preview.png"
+import LogoINF from "../../assets/logo-INF-White.png";
 
 const SideBar: React.FC<SideBarProps> = ({}: SideBarProps) => {
    
