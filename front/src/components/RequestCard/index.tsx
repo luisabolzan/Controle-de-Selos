@@ -20,6 +20,7 @@ import Email from "../../assets/id-card.svg";
 import GenericButton from "../GenericButton";
 import EditButton from "../EditButton";
 import ActionText from "../ActionText";
+import dateToDdMmYy from "../../views/ServiceTagRequest/index"
 
 import { useNavigate } from "react-router-dom";
 
@@ -61,9 +62,31 @@ const RequestCard: React.FC<RequestCardProps> = ({
   // }
 
   // Criar array com informações da Request baseado nos dados recebidos
+function dateToDdMmYyyy(dataIso: string): string {
+  // 1. Cria um objeto Date a partir da string. O JavaScript/TypeScript
+  //    interpreta nativamente o formato ISO "AAAA-MM-DDTHH:mm:ss".
+  const data = new Date(dataIso);
+
+  // 2. Extrai o dia, mês e ano do objeto Date.
+  //    - .getDate() retorna o dia do mês (1-31)
+  //    - .getMonth() retorna o mês (0-11), por isso somamos 1.
+  //    - .getFullYear() retorna o ano com 4 dígitos.
+  const dia = data.getDate();
+  const mes = data.getMonth() + 1;
+  const ano = data.getFullYear();
+
+  // 3. Formata o dia e o mês para garantir que tenham dois dígitos (ex: "09" em vez de "9").
+  //    O método .padStart() adiciona um "0" no início se a string tiver menos de 2 caracteres.
+  const diaFormatado = String(dia).padStart(2, '0');
+  const mesFormatado = String(mes).padStart(2, '0');
+
+  // 4. Retorna a string final no formato desejado.
+  return `${diaFormatado}/${mesFormatado}/${ano}`;
+}
+
   const requestInfo = [
-    request?.start_date || "",
-    request?.end_date || "",
+    request?.start_date ? dateToDdMmYyyy(request?.start_date) : "",
+    request?.start_date ? dateToDdMmYyyy(request?.end_date) : "",
     request?.vehicle?.model || "",
     request?.vehicle?.plate || "",
   ];

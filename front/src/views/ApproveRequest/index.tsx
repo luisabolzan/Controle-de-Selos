@@ -86,7 +86,9 @@ const ApproveRequest = () => {
     startIndexShowedRequests,
     startIndexShowedRequests + requestsPerPage
   );
+  
   const filteredRequests = showedRequests.filter((request) => {
+    
     const matchesTag = selectedTag
       ? request.solicited_tag_type === selectedTag
       : true;
