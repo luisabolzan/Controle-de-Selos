@@ -12,12 +12,13 @@ class ResponseDTO(BaseModel, Generic[T]):
     data: Optional[T] = None
     message: Optional[str] = None
 
-class ServiceTagSolicitationDTO(BaseModel):
+class ServiceTagDTO(BaseModel):
     vehicle_id: Optional[int] = None
-    token: str
-    user_id: Optional[int] = None
     start_date: datetime
     end_date: datetime
+
+class ServiceTagSolicitationDTO(ServiceTagDTO):
+    user_id: int
 
 # More Generic DTO for visualization purposes
 # Don't use this for creating or updating records
