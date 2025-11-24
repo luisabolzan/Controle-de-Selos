@@ -13,13 +13,8 @@ from .routes.users import users_router
 app = FastAPI()
 
 origins = [
-    "localhost:3000/service",
-    "http://localhost:3000/service",
-    "http://localhost:3000",
     "http://localhost:3000",
     "http://192.168.0.103:3000",
-    "http://192.168.0.103:3000/service",
-    "http://localhost:3000/approve"
 ]
 
 app.add_middleware(
