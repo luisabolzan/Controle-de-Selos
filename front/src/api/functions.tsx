@@ -101,3 +101,32 @@ export const updateSolicitationStatus = async (id: number, approval: boolean) =>
         throw error;
     }
 };
+
+export const authenticateUser = async (username: string, password: string) => {
+  const formData = new URLSearchParams();
+  formData.append('username', username);
+  formData.append('password', password);
+
+  try {
+    const response = await fetch(`${API_URL}/auth/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData, 
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Falha na autenticação');
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error("Erro no login:", error);
+    throw error;
+  }
+};

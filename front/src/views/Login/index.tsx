@@ -14,6 +14,9 @@ import { User } from "lucide-react";
 import ActionText from "../../components/ActionText";
 import GenericButton from "../../components/GenericButton";
 
+import { authenticateUser } from "../../api/functions";
+
+
 export const Login: React.FC = () => {
 
     const [user, setUser] = useState('');
@@ -42,14 +45,17 @@ export const Login: React.FC = () => {
         setError(false);
         setErrorMessage('');
 
-        // Simula uma chamada de API
-        setTimeout(() => {
-            // Aqui precisa adicionar a lógica real de autenticação
-            // Por enquanto, vamos apenas navegar para a página principal
+        try{
+            await authenticateUser(user, password);
+            navigate("/")
+            setError(false);
+            setPassword("")
+        } catch (error) {
+            setError(true);
+            setErrorMessage("Falha na autenticação. Verifique seu usuário e senha.");
+        } finally {
             setIsLoading(false);
-            navigate("/");
-
-        }, 2000);
+        }
     }
 
     return (

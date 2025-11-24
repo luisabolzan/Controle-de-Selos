@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .routes.solicitations import solicitations_router
 from .routes.auth import auth_router
+from .routes.users import users_router
 
 # Run this file with:
 # uvicorn routes:app --reload
@@ -31,6 +32,7 @@ app.add_middleware(
 
 app.include_router(solicitations_router)
 app.include_router(auth_router)
+app.include_router(users_router)
 
 def success_response(data: any) -> ResponseDTO:
     return ResponseDTO(success=True, data=data, message="success")
