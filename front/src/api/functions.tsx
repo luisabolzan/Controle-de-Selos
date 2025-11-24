@@ -33,12 +33,11 @@ const apiFetch = async (endpoint: string, method: string, body?: object, useCred
     }
 };
 
-export const createServiceTagRequest = async (data: { startDate: string; endDate: string; userId: number }) => {
+export const createServiceTagRequest = async (data: { startDate: string; endDate: string;}) => {
     const requestData = {
         start_date: data.startDate,
         end_date: data.endDate,
     };
-
     return await apiFetch('/solicitations/service', REQUEST_METHODS.POST, requestData);
 };
 
