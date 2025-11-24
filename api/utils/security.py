@@ -15,7 +15,7 @@ load_dotenv()
 
 SECRET_KEY = getenv("SECRET_KEY")
 ALGORITHM = getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_HOURS = getenv("ACCESS_TOKEN_EXPIRE_HOURS")
+ACCESS_TOKEN_EXPIRE_HOURS = float(getenv("ACCESS_TOKEN_EXPIRE_HOURS"))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
