@@ -1,5 +1,5 @@
 
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = 'http://localhost:8000/api';
 
 const REQUEST_METHODS ={
     POST: 'POST',
@@ -9,97 +9,50 @@ const REQUEST_METHODS ={
     PATCH: 'PATCH'
 }
 
-const DEFAULT_HEADERS = {
-    'Content-Type': 'application/json'
-};
 
-export const createServiceTagRequest = async (data: { startDate: string; endDate: string; userId: number }) => {
-
-    // Use the correct field names expected by the backend
-    const requestData = {
-        start_date: data.startDate,
-        end_date: data.endDate,
-        user_id: data.userId,
-    }
-
+const apiFetch = async (endpoint: string, method: string, body?: object, useCredentials: boolean = true) => {
     try {
-        const response = await fetch(`${API_URL}/solicitations/service`, {
-            method: REQUEST_METHODS.POST,
+        const response = await fetch(`${API_URL}${endpoint}`, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(requestData),
+            credentials: useCredentials ? 'include' : 'omit',
+            body: body ? JSON.stringify(body) : undefined,
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.statusText);
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.detail || `Error ${response.status}: ${response.statusText}`);
         }
 
-        const result = await response.json();
-        return result;
+        return await response.json();
     } catch (error) {
-        console.error('Error creating service tag request:', error);
+        console.error(`Error in request to ${endpoint}:`, error);
         throw error;
     }
+};
+
+export const createServiceTagRequest = async (data: { startDate: string; endDate: string; userId: number }) => {
+    const requestData = {
+        start_date: data.startDate,
+        end_date: data.endDate,
+    };
+
+    return await apiFetch('/solicitations/service', REQUEST_METHODS.POST, requestData);
 };
 
 
 export const getAllSolicitations = async () => {
-    try {
-        const response = await fetch(`${API_URL}/solicitations`, {
-            method: REQUEST_METHODS.GET,
-            headers: DEFAULT_HEADERS,
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }
-
-        const result = await response.json();
-        
-        // O backend retorna um objeto { success: true, data: [...] }
-        // É uma boa prática retornar apenas os dados para o componente
-        if (result.success) {
-            return result.data;
-        } else {
-            // Se o backend responder com success: false, trata como um erro
-            throw new Error(result.message || 'Failed to fetch solicitations');
-        }
-
-    } catch (error) {
-        console.error('Error fetching solicitations:', error);
-        throw error;
-    }
+    const result = await apiFetch('/solicitations', REQUEST_METHODS.GET);
+    return result; 
 };
 
 export const updateSolicitationStatus = async (id: number, approval: boolean) => {
-
     const parsedId = Number(id);
+    const data = { approval: approval };
 
-    const data = { 
-        approval: approval,
-     };
-
-     console.log(data);
-     console.log(`${API_URL}/solicitations/${parsedId}`);
-
-    try {
-        const response = await fetch(`${API_URL}/solicitations/${parsedId}`, {
-            method: REQUEST_METHODS.PATCH,
-            headers: DEFAULT_HEADERS,
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }
-
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error('Error updating solicitation status:', error);
-        throw error;
-    }
+    return await apiFetch(`/solicitations/${parsedId}`, REQUEST_METHODS.PATCH, data);
 };
 
 export const authenticateUser = async (username: string, password: string) => {
