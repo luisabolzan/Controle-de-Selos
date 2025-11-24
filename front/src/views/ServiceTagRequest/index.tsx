@@ -80,9 +80,8 @@ const ServiceTagRequest = () => {
         try {
             // 'await' espera a requisição terminar
             const result = await createServiceTagRequest({
-                startDate: dateToYyyyMmDd(dateRange.start), // Formato correto
-                endDate: dateToYyyyMmDd(dateRange.end),   // Formato correto
-                userId: 1, // Lembre-se de substituir pelo ID do usuário logado (useAuth)
+                startDate: dateToYyyyMmDd(dateRange.start),
+                endDate: dateToYyyyMmDd(dateRange.end),
             });
 
             //mostra toast de selo solicitado com sucesso

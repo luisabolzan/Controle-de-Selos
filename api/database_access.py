@@ -19,7 +19,7 @@ class _DatabaseAccess:
 db_access = _DatabaseAccess()
 
 def get_db():
-    db = db_access.session()
+    db = db_access.session
     try:
         yield db
     finally:
