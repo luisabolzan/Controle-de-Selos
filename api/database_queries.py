@@ -1,11 +1,10 @@
-from api_schemas import ServiceTagSolicitationDTO
-from database_models import Solicitation
-from database_access import DatabaseAccess
+from .api_schemas import ServiceTagSolicitationDTO
+from .database_models import Solicitation, Users
+from .database_access import get_db
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload, selectinload
 
-db_access = DatabaseAccess()
-session = db_access.session
+session = get_db()
 
 def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO):
     new_solicitation = Solicitation(
@@ -41,3 +40,6 @@ def get_all_solicitations():
         ).all()
     session.commit()
     return solicitations
+
+def check_user_exists(email) -> Users:
+    return session.query(Users).filter(Users.email == email)
