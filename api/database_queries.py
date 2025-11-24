@@ -1,12 +1,9 @@
 from .api_schemas import ServiceTagSolicitationDTO
 from .database_models import Solicitation, Users
-from .database_access import get_db
 from sqlalchemy import func
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import joinedload, Session
 
-session = get_db()
-
-def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO):
+def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO, session: Session):
     new_solicitation = Solicitation(
         creation_date=func.now(),
         is_approved=False,
@@ -22,7 +19,7 @@ def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO):
     print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
     return new_solicitation
 
-def set_solicitation_approval_status(solicitation_id: int, approved: bool):
+def set_solicitation_approval_status(solicitation_id: int, approved: bool, session: Session):
     solicitation = session.query(Solicitation).filter(Solicitation.solicitation_id == solicitation_id).first()
     if not solicitation:
         raise ValueError(f"Solicitação com ID {solicitation_id} não encontrada.")
@@ -33,7 +30,7 @@ def set_solicitation_approval_status(solicitation_id: int, approved: bool):
     print(f" Solicitação ID {solicitation_id} atualizada para {'aprovada' if approved else 'rejeitada'}.")
     return solicitation
 
-def get_all_solicitations():
+def get_all_solicitations(session: Session):
     solicitations = session.query(Solicitation).options(
             joinedload(Solicitation.vehicle),
             joinedload(Solicitation.user)
@@ -41,5 +38,5 @@ def get_all_solicitations():
     session.commit()
     return solicitations
 
-def check_user_exists(email) -> Users:
-    return session.query(Users).filter(Users.email == email)
+def check_user_exists(email, session: Session) -> Users:
+    return session.query(Users).filter(Users.email == email).first()
