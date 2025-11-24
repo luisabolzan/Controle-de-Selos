@@ -43,4 +43,4 @@ def login(response:Response, form_data: OAuth2PasswordRequestForm = Depends(), s
         max_age= 60 * 60 * 48 # 48h 
     )
     
-    return ResponseDTO(message="Login successful", success=True, data=None)
+    return ResponseDTO(message="Login successful", success=True, data={"isAdmin": user.is_admin})

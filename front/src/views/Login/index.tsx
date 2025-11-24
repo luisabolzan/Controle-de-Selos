@@ -46,10 +46,12 @@ export const Login: React.FC = () => {
         setErrorMessage('');
 
         try{
-            await authenticateUser(user, password);
-            navigate("/")
+            const response = await authenticateUser(user, password);
+            localStorage.setItem('isAdmin', response.data.isAdmin);            
+            
             setError(false);
             setPassword("")
+            navigate("/")
         } catch (error) {
             setError(true);
             setErrorMessage("Falha na autenticação. Verifique seu usuário e senha.");
