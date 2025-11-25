@@ -12,7 +12,7 @@ users_router = APIRouter(prefix='/users')
 
 @users_router.post('/register', response_model=TokenDTO)
 def register(user: UserRegisterDTO, db: Session = Depends(get_db)):
-    user_exists = check_user_exists(user.email) is not None
+    user_exists = check_user_exists(user.email, db) is not None
     
     if user_exists:
         raise HTTPException(
@@ -32,4 +32,4 @@ def register(user: UserRegisterDTO, db: Session = Depends(get_db)):
     db.refresh(new_user)
     
     token = create_access_token(new_user.email)
-    return TokenDTO(token, "bearer")
+    return TokenDTO(access_token=token, token_type="bearer")

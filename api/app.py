@@ -37,7 +37,7 @@ def failed_response(message: str) -> ResponseDTO:
 
 @app.get('/api/tags')
 def get_tags() -> list[TagDTO]: 
-    pass
+    return []
 
 @app.post('/api/tags')
 def post_tag(tag: TagDTO) -> None:
