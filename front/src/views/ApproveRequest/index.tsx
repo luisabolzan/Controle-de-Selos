@@ -23,7 +23,7 @@ import Toast from "../../components/Toast";
 import { getAllSolicitations } from "../../api/functions";
 import { sleep } from "../../utils/functions";
 
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/DateRangeSelector/styles";
 
 import { updateSolicitationStatus } from "../../api/functions";
@@ -51,9 +51,9 @@ const ApproveRequest = () => {
       setIsLoading(true); // Inicia o feedback de carregamento
       await sleep(1000);
       // Inicia a requisição
-      const data = await getAllSolicitations();
+      const response = await getAllSolicitations();
       // 3. Atribui a lista recebida ao estado
-      setRequests(data);
+      setRequests(response.data);
     } catch (err) {
       // Se ocorrer um erro, guarda a mensagem de erro no estado
       setError(true);
