@@ -1,25 +1,21 @@
-from fastapi import APIRouter
 from fastapi import HTTPException, Depends, status, APIRouter
 from sqlalchemy.orm import Session
 
-from api.utils.security import get_password_hash, create_access_token
-from api.api_schemas import TokenDTO, UserRegisterDTO
+from api.utils.security import get_password_hash
+from api.api_schemas import UserRegisterDTO, ResponseDTO
 from api.database_queries import check_user_exists
 from api.database_models import Users
 from api.database_access import get_db
 
-users_router = APIRouter(prefix='/users')
+users_router = APIRouter(prefix='/api/users')
 
-@users_router.post('/register', response_model=TokenDTO)
+@users_router.post('/register', status_code=status.HTTP_201_CREATED)
 def register(user: UserRegisterDTO, db: Session = Depends(get_db)):
     user_exists = check_user_exists(user.email, db) is not None
     
     if user_exists:
-        raise HTTPException(
-            status_code=400,
-            detail="User already exists"
-        )
-        
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='User already exists')
+
     new_user = Users(
         password_hash=get_password_hash(user.password),
         name=user.name,
@@ -27,9 +23,9 @@ def register(user: UserRegisterDTO, db: Session = Depends(get_db)):
         cpf=user.cpf,
         phone_number=user.phone_number
     )
+    
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     
-    token = create_access_token(new_user.email)
-    return TokenDTO(access_token=token, token_type="bearer")
+    return ResponseDTO(success=True, message="User registered successfully")

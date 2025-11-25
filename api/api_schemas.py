@@ -78,6 +78,6 @@ class UserDTO(BaseModel):
     has_active_request: Optional[bool] = False
 
 class UserRegisterDTO(UserDTO):
+    username: str
     password: str
-    phone_number: str
-    cpf: str
+    
