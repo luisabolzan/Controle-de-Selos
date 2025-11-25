@@ -1,3 +1,4 @@
-export interface HeaderProps{
-
+export interface HeaderProps {
+    onLogout?: () => void;
+    userName?: string;
 }
