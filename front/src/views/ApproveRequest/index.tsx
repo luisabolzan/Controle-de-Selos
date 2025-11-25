@@ -1,11 +1,8 @@
-import { Tag } from "lucide-react";
-import React from "react";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 
 import {
   MainContainer,
   Separator,
-  SubTitle,
   ServiceContainer,
   CardsContainer,
   RequestCardsContainer,
@@ -20,14 +17,9 @@ import PaginationButtons from "../../components/PaginationButtons";
 import ConfirmModal from "../../components/ConfirmModal";
 import Toast from "../../components/Toast";
 
-import { getAllSolicitations } from "../../api/functions";
-import { sleep } from "../../utils/functions";
-
-import { data, useNavigate } from "react-router-dom";
-import { ErrorMessage } from "../../components/DateRangeSelector/styles";
-
-import { updateSolicitationStatus } from "../../api/functions";
+import { getAllSolicitations, updateSolicitationStatus } from "../../api/functions";
 import { Request } from "../../components/RequestCard/types";
+import { useDebounce } from "../../hooks/useDebounce";
 
 type ModalAction = {
   tipo: "aprovar" | "recusar";
@@ -35,77 +27,69 @@ type ModalAction = {
 } | null;
 
 const ApproveRequest = () => {
+  // --- ESTADOS DE DADOS ---
   const [requests, setRequests] = useState<Request[]>([]);
+  const [totalItems, setTotalItems] = useState<number>(0); // Total geral no banco (para paginação)
+  
+  // --- ESTADOS DE CONTROLE ---
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  // --- ESTADOS DE FILTRO ---
   const [selectedTag, setSelectedTag] = useState<string>("");
   const [plate, setPlate] = useState<string>("");
   const [name, setName] = useState<string>("");
 
-  const navigate = useNavigate();
+  // --- ESTADOS DE FILTRO ---
+    const debouncedName = useDebounce<string>(name, 200);
+    const debouncedPlate = useDebounce<string>(plate, 200);
 
-  const fetchRequests = async () => {
-    try {
-      setIsLoading(true); // Inicia o feedback de carregamento
-      await sleep(1000);
-      // Inicia a requisição
-      const response = await getAllSolicitations();
-      // 3. Atribui a lista recebida ao estado
-      setRequests(response.data);
-    } catch (err) {
-      // Se ocorrer um erro, guarda a mensagem de erro no estado
-      setError(true);
-      setErrorMessage("Não foi possível carregar as solicitações.");
-      console.error(err);
-    } finally {
-      // Este bloco sempre executa, com ou sem erro
-      setIsLoading(false); // Termina o estado de carregamento
-    }
-  };
-
-  useEffect(() => {
-    fetchRequests(); // Executa a função de busca
-  }, []); // O array vazio [] garante que isso rode apenas uma vez, quando o componente é montado
-
+  // --- ESTADOS DE PAGINAÇÃO ---
   const getRequestsPerPage = () => {
     if (window.innerWidth >= 1900) return 8;
     else if (window.innerWidth >= 1612) return 6;
     else return 4;
   };
 
-  const [requestsPerPage, setRequestsPerPage] = useState<number>(
-    getRequestsPerPage()
-  );
+  const [requestsPerPage, setRequestsPerPage] = useState<number>(getRequestsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Define as solicitações que serão mostradas com base na página atual
-  const startIndexShowedRequests = requestsPerPage * (currentPage - 1);
-  const showedRequests = requests.slice(
-    startIndexShowedRequests,
-    startIndexShowedRequests + requestsPerPage
-  );
-  
-  const filteredRequests = showedRequests.filter((request) => {
-    
-    const matchesTag = selectedTag
-      ? request.solicited_tag_type === selectedTag
-      : true;
-    const matchesPlate = !plate
-      ? true
-      : request.vehicle && request.vehicle.plate
-      ? request.vehicle.plate.toLowerCase().includes(plate.toLowerCase())
-      : false;
-    const matchesName = name
-      ? request.user.name.toLowerCase().includes(name.toLowerCase())
-      : true;
-    return matchesTag && matchesPlate && matchesName;
-  });
+  // Usamos useCallback para evitar recriação da função em todo render
+  const fetchRequests = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(false);
 
-  //console.log("Total de solicitações recebidas:", requests.length);
-  //console.log("Limite de itens por página:", requestsPerPage);
-  //console.log("Itens que deveriam ser mostrados (showedRequests):", showedRequests.length);
+      const filters = {
+        page: currentPage,
+        size: requestsPerPage,
+        name: name,
+        plate: plate,
+        tag_type: selectedTag,
+        status: 'pendente' as const
+      };
+
+      const response = await getAllSolicitations(filters);
+
+      setRequests(response.data);
+      setTotalItems(response.total); // Importante para o componente de paginação saber o fim
+      setCurrentPage(1);
+
+    } catch (err) {
+      setError(true);
+      setErrorMessage("Não foi possível carregar as solicitações.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, requestsPerPage, debouncedName, debouncedPlate, selectedTag]);
+
+
+  // 1. Busca dados sempre que paginação ou filtros mudam
+  useEffect(() => {
+    fetchRequests();
+  }, [fetchRequests]);
 
   useEffect(() => {
     // Função que será chamada sempre que a janela for redimensionada
@@ -129,10 +113,7 @@ const ApproveRequest = () => {
   const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [modalAction, setModalAction] = useState<ModalAction>(null);
 
-  // Toast de sucesso
-  const [toastType, setToastType] = useState<"aprovar" | "recusar" | null>(
-    null
-  );
+  const [toastType, setToastType] = useState<"aprovar" | "recusar" | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
 
@@ -141,17 +122,11 @@ const ApproveRequest = () => {
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [errorToastVisible, setErrorToastVisible] = useState(false);
 
-  //=======================================================================================================
-  //================ USAR API FUNCTION ====================================================================
-  //=======================================================================================================
   const approveSolicitation = async (solicitationId: string) => {
     const id = parseInt(solicitationId);
     await updateSolicitationStatus(id, true);
   };
 
-  //=======================================================================================================
-  //================ USAR API FUNCTION ====================================================================
-  //=======================================================================================================
   const rejectSolicitation = async (solicitationId: string) => {
     const id = parseInt(solicitationId);
     await updateSolicitationStatus(id, false);
@@ -204,17 +179,11 @@ const ApproveRequest = () => {
     }, 3500);
   };
 
-  /**
-   * Abrir modal (e fechar toast se estiver aberto)
-   */
   const openModal = (tipo: "aprovar" | "recusar", solicitationId: string) => {
     resetToast();
-    setModalAction({ tipo, solicitationId: solicitationId });
+    setModalAction({ tipo, solicitationId });
   };
 
-  /**
-   * Confirmar ação - VERSÃO CORRIGIDA
-   */
   const handleConfirm = async () => {
     if (!modalAction) return;
 
@@ -251,13 +220,17 @@ const ApproveRequest = () => {
     setSelectedTag(filters.state);
     setPlate(filters.plate);
     setName(filters.name);
+    
+    setCurrentPage(1); 
   };
 
   const handleClearFilters = () => {
     setSelectedTag("");
     setPlate("");
     setName("");
+    setCurrentPage(1);
   };
+
   return (
     <ServiceContainer>
       <SideBar />
@@ -271,7 +244,7 @@ const ApproveRequest = () => {
 
         <CardsContainer>
           <RequestFilter
-            requests={requests.map((request) => request.solicitation_id)}
+            requests={[]} 
             selectedTag={selectedTag}
             setSelectedTag={setSelectedTag}
             plate={plate}
@@ -283,16 +256,17 @@ const ApproveRequest = () => {
           />
 
           <GridCardsContainer>
-            {isLoading && <h3> Carrgando Solicitações... </h3>}
+            {isLoading && <h3> Carregando Solicitações... </h3>}
 
             {!isLoading && error && <h3>{errorMessage}</h3>}
 
-            {requests.length == 0 && !isLoading && !error && (
+            {requests.length === 0 && !isLoading && !error && (
               <h3> Não há solicitações pendentes </h3>
             )}
+            
             <RequestCardsContainer>
-              {filteredRequests.length > 0 &&
-                filteredRequests.map((request) => (
+              {requests.length > 0 &&
+                requests.map((request) => (
                   <RequestCard
                     key={request.solicitation_id}
                     request={request}
@@ -306,7 +280,6 @@ const ApproveRequest = () => {
                   />
                 ))}
 
-              {/* Modal de Confirmação */}
               <ConfirmModal
                 isOpen={modalAction !== null}
                 title={
@@ -316,7 +289,7 @@ const ApproveRequest = () => {
                 }
                 message={
                   modalAction?.tipo === "aprovar"
-                    ? "Tem certeza de que deseja aprovar este selo? Caso este selo não possa ser entregue ao usário você pode redefinir o status da solicitação em solicitações concluidas"
+                    ? "Tem certeza de que deseja aprovar este selo?..."
                     : "Uma vez recusada, a solicitação sairá da lista de avaliação."
                 }
                 confirmLabel={
@@ -329,18 +302,13 @@ const ApproveRequest = () => {
                 onClose={() => setModalAction(null)}
               />
 
-              {/* Toast de Sucesso */}
               {showToast && toastType && (
                 <Toast
                   type="success"
                   message={`Solicitação ${
                     toastType === "aprovar" ? "aprovada" : "recusada"
                   } com sucesso!`}
-                  description={`${
-                    toastType === "aprovar"
-                      ? "Confirme o recebimento na retirada"
-                      : "Status de solicitação atualizado"
-                  }`}
+                  description={toastType === "aprovar" ? "Confirme o recebimento..." : "Status atualizado"}
                   onClose={() => {
                     setToastVisible(false);
                     setTimeout(() => setShowToast(false), 300);
@@ -349,7 +317,6 @@ const ApproveRequest = () => {
                 />
               )}
 
-              {/* Toast de Erro */}
               {showErrorToast && errorToast && (
                 <Toast
                   type="error"
@@ -370,7 +337,7 @@ const ApproveRequest = () => {
             <PaginationButtons
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              itemsLength={requests.length}
+              itemsLength={totalItems}
               itemsPerPage={requestsPerPage}
               buttonHeight="30px"
               buttonWidth="30px"
