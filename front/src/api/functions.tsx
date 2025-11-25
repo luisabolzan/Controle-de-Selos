@@ -43,7 +43,7 @@ export const createServiceTagRequest = async (data: { startDate: string; endDate
 
 
 export const getAllSolicitations = async () => {
-    const result = await apiFetch('/solicitations', REQUEST_METHODS.GET);
+    const result = await apiFetch('/solicitations/', REQUEST_METHODS.GET);
     return result; 
 };
 

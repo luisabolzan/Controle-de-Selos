@@ -14,6 +14,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
+    "http://localhost:3000/approve",
     "http://192.168.0.103:3000",
 ]
 
