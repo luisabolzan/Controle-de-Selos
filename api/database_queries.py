@@ -1,6 +1,6 @@
-from .api_schemas import ServiceTagSolicitationDTO
-from .database_models import Solicitation, Users
-from sqlalchemy import func
+from .api_schemas import ServiceTagSolicitationDTO, SolicitationFilterParams, SolicitationStatusEnum
+from .database_models import Solicitation, Users, Vehicles
+from sqlalchemy import func, or_, and_
 from sqlalchemy.orm import joinedload, Session
 
 def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO, session: Session):
@@ -30,13 +30,43 @@ def set_solicitation_approval_status(solicitation_id: int, approved: bool, sessi
     print(f" Solicitação ID {solicitation_id} atualizada para {'aprovada' if approved else 'rejeitada'}.")
     return solicitation
 
-def get_all_solicitations(session: Session):
-    solicitations = session.query(Solicitation).options(
-            joinedload(Solicitation.vehicle),
-            joinedload(Solicitation.user)
-        ).all()
-    session.commit()
-    return solicitations
+def get_solicitations_filtered(session: Session, filters: SolicitationFilterParams):
+    query = session.query(Solicitation).join(Users).outerjoin(Vehicles)
+
+    # name filter
+    if filters.name:
+        query = query.filter(Users.name.ilike(f"%{filters.name}%"))
+
+    # plate filter
+    if filters.plate:
+        query = query.filter(Vehicles.plate.ilike(f"%{filters.plate}%"))
+
+    # tag_type filter
+    if filters.tag_type:
+        query = query.filter(Solicitation.solicited_tag_type == filters.tag_type)
+
+    # status filter
+    if filters.status:
+        if filters.status == SolicitationStatusEnum.PENDING:
+            query = query.filter(Solicitation.reviewed == False)
+        
+        elif filters.status == SolicitationStatusEnum.APPROVED:
+            query = query.filter(and_(Solicitation.reviewed == True, Solicitation.is_approved == True))
+            
+        elif filters.status == SolicitationStatusEnum.REJECTED:
+            query = query.filter(and_(Solicitation.reviewed == True, Solicitation.is_approved == False))
+
+    total_filtered = query.count()
+
+    skip = (filters.page - 1) * filters.size
+    
+    items = query.order_by(Solicitation.creation_date.desc())\
+                 .options(joinedload(Solicitation.user), joinedload(Solicitation.vehicle))\
+                 .offset(skip)\
+                 .limit(filters.size)\
+                 .all()
+
+    return items, total_filtered
 
 def check_user_exists(email, session: Session) -> Users:
     return session.query(Users).filter(Users.email == email).first()

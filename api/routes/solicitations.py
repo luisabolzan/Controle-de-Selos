@@ -1,5 +1,7 @@
-from api.api_schemas import ServiceTagDTO, ServiceTagSolicitationDTO, ResponseDTO, SolicitationDTO, SolicitationApproval
-from api.database_queries import create_service_tag_solicitation, get_all_solicitations, set_solicitation_approval_status
+from pytest import Session
+from math import ceil
+from api.api_schemas import PaginatedResponse, ServiceTagDTO, ServiceTagSolicitationDTO, ResponseDTO, SolicitationDTO, SolicitationApproval, SolicitationFilterParams
+from api.database_queries import create_service_tag_solicitation, get_solicitations_filtered, set_solicitation_approval_status
 from api.database_models import Users
 from api.utils.security import get_current_user
 from api.database_access import get_db
@@ -33,21 +35,32 @@ def add_service_solicitation(
         return failed_response(message=str(e))
 
 @solicitations_router.get('/')
-def get_solicitations(current_user: Users = Depends(get_current_user),
-                      session=Depends(get_db)) -> ResponseDTO[list[SolicitationDTO]]:
-    try:
-        if not current_user.is_admin: 
-            raise ValueError
-        result = get_all_solicitations(session=session)
-        return success_response(data=result)
-    except ValueError as e:
-        print(f"Erro ao obter solicitações: {e}")
-        return failed_response(message=str(e))
+@solicitations_router.get('/', response_model=PaginatedResponse[SolicitationDTO])
+def get_solicitations(
+    filters: SolicitationFilterParams = Depends(), 
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+
+    if not current_user.is_admin:
+        return failed_response(message="Unauthorized")
+    
+    items, total = get_solicitations_filtered(db, filters)
+    total_pages = ceil(total / filters.size) if filters.size > 0 else 0
+    
+    return PaginatedResponse(
+        data=items,
+        total=total,
+        page=filters.page,
+        size=filters.size,
+        pages=total_pages
+    )
 
 @solicitations_router.patch('/{solicitation_id}')
-def update_solicitation_status(solicitation_id: int, body: SolicitationApproval,
-                               session=Depends(get_db),
-                               current_user: Users = Depends(get_current_user)) -> ResponseDTO[None]:
+def update_solicitation_status(
+    solicitation_id: int, body: SolicitationApproval,
+    session=Depends(get_db),
+    current_user: Users = Depends(get_current_user)) -> ResponseDTO[None]:
     try:
         if not current_user.is_admin:
             raise ValueError
