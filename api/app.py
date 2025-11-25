@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from .database_queries import create_service_tag_solicitation, get_all_solicitations, set_solicitation_approval_status
-from .api_schemas import ServiceTagSolicitationDTO, SolicitationDTO, TagDTO,  ResponseDTO, SolicitationApproval
+from .api_schemas import TagDTO, ResponseDTO
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routes.solicitations import solicitations_router
