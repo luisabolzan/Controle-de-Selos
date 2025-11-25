@@ -32,21 +32,26 @@ def add_service_solicitation(
         print(f"Erro ao criar solicitação: {e}")
         return failed_response(message=str(e))
 
-@solicitations_router.get('/solicitations')
-def get_solicitations(current_user: Users = Depends(get_current_user)) -> ResponseDTO[list[SolicitationDTO]]:
+@solicitations_router.get('/')
+def get_solicitations(current_user: Users = Depends(get_current_user),
+                      session=Depends(get_db)) -> ResponseDTO[list[SolicitationDTO]]:
     try:
         if not current_user.is_admin: 
             raise ValueError
-        result = get_all_solicitations()
+        result = get_all_solicitations(session=session)
         return success_response(data=result)
     except ValueError as e:
         print(f"Erro ao obter solicitações: {e}")
         return failed_response(message=str(e))
 
-@solicitations_router.patch('/api/solicitations/{solicitation_id}')
-def update_solicitation_status(solicitation_id: int, body: SolicitationApproval) -> ResponseDTO[None]:
+@solicitations_router.patch('/{solicitation_id}')
+def update_solicitation_status(solicitation_id: int, body: SolicitationApproval,
+                               session=Depends(get_db),
+                               current_user: Users = Depends(get_current_user)) -> ResponseDTO[None]:
     try:
-        result = set_solicitation_approval_status(solicitation_id, body.approval)
+        if not current_user.is_admin:
+            raise ValueError
+        result = set_solicitation_approval_status(solicitation_id, body.approval, session=session)
         return success_response(data=None)
     except ValueError as e:
         print(f"Erro ao atualizar solicitação: {e}")
