@@ -9,6 +9,7 @@ import {
   RequestApproveButtonWrapper,
   Cabecalho,
   RequestTextGroup,
+  StatusIconWrapper,
 } from "./styles";
 import { RequestCardProps } from "./types";
 
@@ -16,6 +17,7 @@ import Location from "../../assets/calendar-arrow-up.svg";
 import Id from "../../assets/calendar-check-2.svg";
 import Phone from "../../assets/car.svg";
 import Email from "../../assets/id-card.svg";
+import { ClockAlert, CircleX, CircleCheckBig } from "lucide-react";
 
 import GenericButton from "../GenericButton";
 import EditButton from "../EditButton";
@@ -102,9 +104,25 @@ function dateToDdMmYyyy(dataIso: string): string {
     >
       <Cabecalho>
         <RequestTextGroup>
-          <RequestName>
-            {request?.user?.name || "Nome não informado"}
-          </RequestName>
+          
+          <StatusIconWrapper>
+
+            <RequestName>
+              {request?.user?.name || "Nome não informado"}
+            </RequestName>
+            
+              {request?.reviewed ? (
+                request?.is_approved ? (
+                  <CircleCheckBig color="green" size={24} />
+                ) : (
+                  <CircleX color="red" size={24} />
+                )
+              ) : (
+                <ClockAlert color="orange" size={24} />
+              )}
+
+          </StatusIconWrapper>
+        
           <RequestType>
             {request?.solicited_tag_type == "temp"
               ? "Credencial Provisória"
@@ -124,10 +142,6 @@ function dateToDdMmYyyy(dataIso: string): string {
             <p>{info ? info : "Indisponível"}</p>
           </DataItem>
         ))}
-
-        {request?.reviewed && (
-          <p>{request?.is_approved ? "Aprovado" : "Rejeitado"}</p>
-        )}
 
         <ActionText
           width="auto"

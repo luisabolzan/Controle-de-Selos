@@ -283,7 +283,7 @@ const ApproveRequest = () => {
           />
 
           <GridCardsContainer>
-            {isLoading && <h3> Carrgando Solicitações... </h3>}
+            {isLoading && <h3> Carregando Solicitações... </h3>}
 
             {!isLoading && error && <h3>{errorMessage}</h3>}
 

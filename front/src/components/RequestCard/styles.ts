@@ -29,12 +29,19 @@ export const CardContainer = styled.div<{ $estado: "default" | "hover" | "select
       : "0 2px 5px rgba(0, 0, 0, 0.05)"}; // Sombra sutil no estado default
 `;
 
-export const RequestName = styled.p`
+export const RequestName = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  
   margin: 0;
   font-weight: 700;
   text-align: center;
-  font-size: 1em;
-  
+  font-size: 1em;  
 `;
 
 export const RequestType = styled.p`
@@ -102,6 +109,7 @@ export const Cabecalho = styled.div`
   box-sizing: border-box;
   position: relative;
   display: flex;
+  width: 100%;
   justify-content: left;
   align-items: left;
   padding: 10px;
@@ -110,6 +118,7 @@ export const Cabecalho = styled.div`
 export const RequestTextGroup = styled.div`
   box-sizing: border-box;
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: flex-start;
   color: rgba(0, 0, 0, 1);
@@ -122,3 +131,10 @@ export const EditButtonWrapper = styled.div`
   top: 0;
   right: 0;
 `;
+
+export const StatusIconWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+`
