@@ -1,8 +1,32 @@
-from pydantic import BaseModel
-from typing import Optional, TypeVar, Generic
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional, TypeVar, Generic, List
 from datetime import datetime
+from enum import Enum
 
 T = TypeVar('T')
+
+
+class SolicitationStatusEnum(str, Enum):
+    PENDING = "pendente"
+    APPROVED = "aprovado"
+    REJECTED = "rejeitado"
+
+class SolicitationFilterParams(BaseModel):
+    page: int = Field(1, ge=1, description="Número da página")
+    size: int = Field(10, ge=1, le=100, description="Itens por página")
+    
+    name: Optional[str] = None
+    plate: Optional[str] = None
+    tag_type: Optional[str] = None # 'service', 'eventual', etc.
+    status: Optional[SolicitationStatusEnum] = None
+
+
+class PaginatedResponse(BaseModel, Generic[T]):
+    data: List[T] 
+    total: int
+    page: int
+    size: int
+    pages: int
 
 class SolicitationApproval(BaseModel):
     approval: bool
@@ -34,6 +58,8 @@ class SolicitationDTO(BaseModel):
     user_id: int
     vehicle: Optional['VehicleDTO'] = None
     user: 'UserDTO' = None
+    
+    model_config = ConfigDict(from_attributes=True)
 
 class TagDTO(BaseModel):
     tag_id: int
@@ -55,7 +81,3 @@ class UserRegisterDTO(UserDTO):
     password: str
     phone_number: str
     cpf: str
-
-class TokenDTO(BaseModel):
-    access_token: str
-    token_type: str
