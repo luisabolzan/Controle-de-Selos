@@ -19,7 +19,7 @@ import UserTagCard from "../../components/UserTagCard";
 
 import { sleep } from "../../utils/functions";
 
-import { getAllSolicitations, updateSolicitationStatus } from "../../api/functions";
+import { getAllSolicitations, updateSolicitationStatus, getUserTags } from "../../api/functions";
 import { Request } from "../../components/UserRequestCard/types";
 import { useNavigate } from "react-router-dom";
 
@@ -106,7 +106,7 @@ const UserTag = () => {
         status: 'pendente' as const
       };
 
-      const response = await getAllSolicitations(filters);
+      const response = await getUserTags();
 
       setRequests(response.data);
       setTotalItems(response.total); // Importante para o componente de paginação saber o fim

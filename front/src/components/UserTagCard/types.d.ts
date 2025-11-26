@@ -5,6 +5,12 @@ interface Vehicle {
     color: string;
 }
 
+interface Driver{
+  name: string;
+  surname: string;
+  license_number: string;
+}
+
 interface User {
     user_id: string;
     password_hash: string;
@@ -33,8 +39,11 @@ export interface Request {
 }
 
 export interface Tag {
-  tag_id: string;
-  tag_type: string;
+  tag_id: int
+  tag_type: string; 
+  end_date: datetime | null 
+  plate: string
+  username: string
 }
 
 export interface UserTagCardProps {

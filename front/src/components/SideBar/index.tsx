@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { SideBarProps } from "./types";
 import { LogoImage, SideBarContainer, MenuToggleButton, MenuBars, NavList, NavItem, ItemText } from "./styles";
 import LogoINF from "../../assets/logo-INF-White.png";
@@ -16,12 +16,6 @@ const SideBar: React.FC<SideBarProps> = ({}: SideBarProps) => {
         });
     }
 
-   useEffect(() => {
-     document.body.classList.toggle('sidebar-expanded', isExpanded);
-     return () => { document.body.classList.remove('sidebar-expanded'); };
-   }, [isExpanded]);
-
-
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
             if (!compactMenuRef.current) return;
@@ -36,6 +30,12 @@ const SideBar: React.FC<SideBarProps> = ({}: SideBarProps) => {
      }, []);
 
     const navigate = useNavigate();
+
+   // lê isAdmin do localStorage (aceita 'true' ou '1')
+   const isAdmin = useMemo(() => {
+     const v = localStorage.getItem('isAdmin');
+     return v === 'true' || v === '1';
+   }, []);
 
     return (
         <SideBarContainer ref={compactMenuRef} expanded={isExpanded}>
@@ -53,6 +53,25 @@ const SideBar: React.FC<SideBarProps> = ({}: SideBarProps) => {
                 <NavItem>
                     <ItemText visible={isExpanded} onClick={() => navigate("/userTag")}>→ Meus Selos</ItemText>
                 </NavItem>
+
+                {isAdmin && (
+                    <NavItem>
+                        <ItemText visible={isExpanded} onClick={() => navigate("/approve")}>→ Aprovar Solicitações</ItemText>
+                    </NavItem>
+                )}
+
+                {isAdmin && (
+                    <NavItem>
+                        <ItemText visible={isExpanded} onClick={() => navigate("/registeredTags")}>→ Selos Registrados</ItemText>
+                    </NavItem>
+                )}
+
+                {isAdmin && (
+                    <NavItem>
+                        <ItemText visible={isExpanded} onClick={() => navigate("/serviceTagRegister")}>→ Registrar Selo de Serviço</ItemText>
+                    </NavItem>
+                )}
+
             </NavList>
 
             <LogoImage src={LogoINF} alt="INF logo" />
