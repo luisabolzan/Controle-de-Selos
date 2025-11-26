@@ -96,7 +96,7 @@ const ServiceTagRequest = () => {
             }, 3500);
 
             setTimeout(() => {
-                window.location.href = '/';
+                window.location.href = '/tagRequest';
             }, 2000);
 
         } catch (error) {

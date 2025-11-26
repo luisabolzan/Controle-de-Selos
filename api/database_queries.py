@@ -3,6 +3,7 @@ from sqlalchemy.sql import text
 from .database_models import Solicitation, Users, Vehicles
 from sqlalchemy import func, or_, and_
 from sqlalchemy.orm import joinedload, Session
+from typing import List
 
 def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO, session: Session):
     new_solicitation = Solicitation(
@@ -130,8 +131,11 @@ def create_temporary_tag_solicitation(solicitation: TemporaryTagSolicitationDTO,
     print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
     return new_solicitation
 
-def get_user_tags(user_id: int, session: Session):
-    tags = session.query(Solicitation).filter(
+def get_user_tags(user_id: int, session: Session) -> List[Solicitation]:
+    tags = session.query(Solicitation).options(
+        joinedload(Solicitation.vehicle), # Pre-loads vehicle data
+        joinedload(Solicitation.user)     # Pre-loads user data
+    ).filter(
         Solicitation.user_id == user_id,
         Solicitation.is_approved == True,
         Solicitation.reviewed == True,

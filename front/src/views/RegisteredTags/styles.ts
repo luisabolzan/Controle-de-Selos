@@ -1,6 +1,6 @@
 import { execFileSync } from 'child_process';
 import styled from 'styled-components';
-
+import { css } from 'styled-components';
 
 export const Container = styled.div `
     display: flex;
@@ -122,7 +122,7 @@ export const GridCardsContainer = styled.div`
     }
 `
 
-export const RequestCardsContainer = styled.div`
+export const RequestCardsContainer = styled.div<{isBarExpanded:boolean}>`
 
     box-sizing: border-box;
 
@@ -131,6 +131,11 @@ export const RequestCardsContainer = styled.div`
     gap: 40px 40px;
 
     width: 100%;
+
+    ${p => p.isBarExpanded
+      ? css`grid-template-columns: repeat(3, 1fr);`
+      : css`grid-template-columns: repeat(4, 1fr);`
+    }
 
     @media (max-width: 1900px) {
         grid-template-columns: repeat(3, 1fr); 

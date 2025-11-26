@@ -53,6 +53,35 @@ const RegisterdTags = () => {
     else return 4;
   };
 
+  const getTagsPerPage2 = () => {
+      if (window.innerWidth >= 1900) return 6;
+      else if (window.innerWidth >= 1612) return 4;
+      else return 2;
+    };
+
+  const [isBarExpanded, setIsBarExpanded] = useState<boolean>(true);
+  
+    // mudar a quantidade de itens por pagina quando a side bar ocupar mais espaço no container
+    useEffect(() => {
+      const handleSidebarChange = (e: Event) => {
+        const ev = e as CustomEvent<{ expanded?: boolean }>;
+        const expanded = ev.detail?.expanded;
+        if (expanded === true) {
+          setRequestsPerPage(getTagsPerPage2());
+          setIsBarExpanded(true)
+        } else {
+          setRequestsPerPage(getTagsPerPage2());
+          setIsBarExpanded(false)
+        }
+      };
+  
+      window.addEventListener('sidebarToggle', handleSidebarChange as EventListener);
+  
+      return () => {
+        window.removeEventListener('sidebarToggle', handleSidebarChange as EventListener);
+      };
+    }, []);
+
   const [requestsPerPage, setRequestsPerPage] = useState<number>(getRequestsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -246,7 +275,7 @@ const RegisterdTags = () => {
         <Header />
 
         <Separator>
-          <h1> Meus Selos </h1>
+          <h1> Selos de Serviço Registrados </h1>
         </Separator>
 
         <CardsContainer>
@@ -271,7 +300,7 @@ const RegisterdTags = () => {
               <h3> Não há solicitações pendentes </h3>
             )}
             
-            <RequestCardsContainer>
+            <RequestCardsContainer isBarExpanded = {isBarExpanded}>
               {requests.length > 0 &&
                 requests.map((request) => (
                   <AdminTagCard

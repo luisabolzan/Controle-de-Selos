@@ -44,4 +44,4 @@ def login(response:Response, form_data: OAuth2PasswordRequestForm = Depends(), s
         max_age= 60 * 60 * int(token_expire_hours) 
     )
     
-    return LoginResponseDTO(isAdmin=user.is_admin)
+    return LoginResponseDTO(isAdmin=user.is_admin, user=user.name)

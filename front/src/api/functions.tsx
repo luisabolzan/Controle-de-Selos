@@ -132,6 +132,10 @@ export const getUserTags = async () =>{
     return await apiFetch('/tags/my', REQUEST_METHODS.GET);
 }
 
+export const getAllTags = async () =>{
+    return await apiFetch('/tags/', REQUEST_METHODS.GET);
+}
+
 export const getUserSolicitations = async (filters: FilterOptions) => {
     const params = new URLSearchParams();
 

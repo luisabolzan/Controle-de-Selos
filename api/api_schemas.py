@@ -23,6 +23,7 @@ class SolicitationFilterParams(BaseModel):
 class LoginResponseDTO(BaseModel):
     message: Optional[str] = "Login successful"
     isAdmin: bool
+    user: str
 
 class PaginatedResponse(BaseModel, Generic[T]):
     data: List[T] 
@@ -70,7 +71,11 @@ class TemporaryTagSolicitationDTO(TemporaryTagDTO):
     user_id: int
     
 class GenericTagDTO(BaseModel):
-    tag: TemporaryTagDTO | EventualTagDTO | ServiceTagDTO
+    tag_type: str
+    tag_id: int
+    vehicle_plate: Optional[str] = None
+    current_user_email: Optional[str] = None
+    end_date: Optional[datetime] = None
 
 class GenericTagResponse(BaseModel):
     tags: List[GenericTagDTO]

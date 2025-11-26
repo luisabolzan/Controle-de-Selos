@@ -113,12 +113,18 @@ function dateToDdMmYyyy(dataIso: string): string {
             
               {request?.reviewed ? (
                 request?.is_approved ? (
-                  <CircleCheckBig color="green" size={24} />
+                  <span title={`Solicitação Aprovada`}>
+                    <CircleCheckBig color="green" size={24} />
+                  </span>
                 ) : (
-                  <CircleX color="red" size={24} />
+                  <span title={`Solicitação Rejeitada`}>
+                    <CircleX color="red" size={24} />
+                  </span>
                 )
               ) : (
-                <ClockAlert color="orange" size={24} />
+                <span title={`Solicitação Pendente de Avaliação`}>
+                  <ClockAlert color="orange" size={24} />
+                </span>
               )}
 
           </StatusIconWrapper>

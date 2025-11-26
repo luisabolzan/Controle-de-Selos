@@ -39,15 +39,15 @@ export interface Request {
 }
 
 export interface Tag {
-  tag_id: int
   tag_type: string; 
-  end_date: datetime | null 
-  plate: string
-  username: string
+  tag_id: int
+  vehicle_plate: string
+  current_user_email: string
+  end_date: string
 }
 
 export interface UserTagCardProps {
-  tag?: Request;
+  tag?: Tag;
   showApproveButtons?: boolean;
   showEditOptions?: boolean;
 

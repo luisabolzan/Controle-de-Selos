@@ -76,7 +76,8 @@ export const Login: React.FC = () => {
 
         try{
             const response = await authenticateUser(user, password);
-            localStorage.setItem('isAdmin', response.isAdmin);            
+            localStorage.setItem('isAdmin', response.isAdmin);  
+            localStorage.setItem('username', response.user);      
             
             setError(false);
             setPassword("")

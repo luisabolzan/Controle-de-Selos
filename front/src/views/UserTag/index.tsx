@@ -19,8 +19,8 @@ import UserTagCard from "../../components/UserTagCard";
 
 import { sleep } from "../../utils/functions";
 
-import { getAllSolicitations, updateSolicitationStatus, getUserTags } from "../../api/functions";
-import { Request } from "../../components/UserRequestCard/types";
+import { getAllSolicitations, updateSolicitationStatus, getUserTags, getAllTags } from "../../api/functions";
+import { Tag } from "../../components/UserTagCard/types";
 import { useNavigate } from "react-router-dom";
 
 type ModalAction = {
@@ -30,7 +30,7 @@ type ModalAction = {
 
 const UserTag = () => {
   // --- ESTADOS DE DADOS ---
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0); // Total geral no banco (para paginação)
   
   // --- ESTADOS DE CONTROLE ---
@@ -48,13 +48,13 @@ const UserTag = () => {
   const [searchTrigger, setSearchTrigger] = useState(0);
 
   // --- ESTADOS DE PAGINAÇÃO ---
-  const getRequestsPerPage = () => {
+  const gettagsPerPage = () => {
     if (window.innerWidth >= 1900) return 8;
     else if (window.innerWidth >= 1612) return 6;
     else return 4;
   };
 
-    const getRequestsPerPage2 = () => {
+    const gettagsPerPage2 = () => {
     if (window.innerWidth >= 1900) return 6;
     else if (window.innerWidth >= 1612) return 4;
     else return 2;
@@ -66,10 +66,10 @@ const UserTag = () => {
       const ev = e as CustomEvent<{ expanded?: boolean }>;
       const expanded = ev.detail?.expanded;
       if (expanded === true) {
-        setRequestsPerPage(getRequestsPerPage2());
+        setTagsPerPage(gettagsPerPage2());
         setIsBarExpanded(true)
       } else {
-        setRequestsPerPage(getRequestsPerPage());
+        setTagsPerPage(gettagsPerPage());
         setIsBarExpanded(false)
       }
     };
@@ -81,7 +81,7 @@ const UserTag = () => {
     };
   }, []);
 
-  const [requestsPerPage, setRequestsPerPage] = useState<number>(getRequestsPerPage());
+  const [tagsPerPage, setTagsPerPage] = useState<number>(gettagsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
 
   const tagValues: Record<string, string> = {
@@ -91,7 +91,7 @@ const UserTag = () => {
   }
 
   // Usamos useCallback para evitar recriação da função em todo render
-  const fetchRequests = useCallback(async () => {
+  const fetchtags = useCallback(async () => {
     try {
       setIsLoading(true);
       await sleep(500);
@@ -99,7 +99,7 @@ const UserTag = () => {
 
       const filters = {
         page: currentPage,
-        size: requestsPerPage,
+        size: tagsPerPage,
         name: name,
         plate: plate,
         tag_type: tagValues[selectedTag],
@@ -107,8 +107,9 @@ const UserTag = () => {
       };
 
       const response = await getUserTags();
+      console.log(response);
 
-      setRequests(response.data);
+      setTags(response.tags);
       setTotalItems(response.total); // Importante para o componente de paginação saber o fim
 
     } catch (err) {
@@ -118,18 +119,18 @@ const UserTag = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, requestsPerPage, selectedTag, searchTrigger]);
+  }, [currentPage, tagsPerPage, selectedTag, searchTrigger]);
 
 
   // 1. Busca dados sempre que paginação ou filtros mudam
   useEffect(() => {
-    fetchRequests();
-  }, [fetchRequests]);
+    fetchtags();
+  }, [fetchtags]);
 
   useEffect(() => {
     // Função que será chamada sempre que a janela for redimensionada
     const handleResize = () => {
-      setRequestsPerPage(getRequestsPerPage());
+      setTagsPerPage(gettagsPerPage());
     };
 
     // Adiciona o "ouvinte" ao evento 'resize' da janela
@@ -226,7 +227,7 @@ const UserTag = () => {
       if (modalAction.tipo === "excluir") {
         await approveSolicitation(modalAction.solicitationId);
       }
-      await fetchRequests();
+      await fetchtags();
 
       showSuccessToast(modalAction.tipo);
     } catch (error) {
@@ -295,23 +296,16 @@ const UserTag = () => {
 
             {!isLoading && error && <h3>{errorMessage}</h3>}
 
-            {requests.length === 0 && !isLoading && !error && (
+            {tags?.length === 0 && !isLoading && !error && (
               <h3> Não há solicitações pendentes </h3>
             )}
             
             <RequestCardsContainer isBarExpanded={isBarExpanded}>
-              {requests.length > 0 &&
-                requests.map((request) => (
+              {tags?.length > 0 &&
+                tags.map((tag) => (
                   <UserTagCard
-                    key={request.solicitation_id}
-                    tag={request}
-                    showApproveButtons={true}
-                    onDeleteClick={() =>
-                      openModal("excluir", request.solicitation_id)
-                    }
-                    onEditClick={() =>
-                      navigate('/')
-                    }
+                    key={tag.tag_id}
+                    tag={tag}
                   />
                 ))}
 
@@ -359,7 +353,7 @@ const UserTag = () => {
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               itemsLength={totalItems}
-              itemsPerPage={requestsPerPage}
+              itemsPerPage={tagsPerPage}
               buttonHeight="30px"
               buttonWidth="30px"
               containerHeight="160px"

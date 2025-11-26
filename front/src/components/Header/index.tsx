@@ -3,10 +3,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { HeaderProps } from "./types";
 import { HeaderContainer, ProfileButton, DropdownContainer, DropdownMenu, DropdownItem } from "./styles";
 import { CircleUserRound, ChevronDown, LogOut, ChevronUp } from "lucide-react";
+import { useMemo } from "react";
 
 const Header: React.FC<HeaderProps> = ({ userName = "Nome do usuário", onLogout }: HeaderProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
+
+    const username = useMemo(() => {
+        const name = localStorage.getItem('username');
+        return name || 'Nome do usuário';
+    }, []);
 
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
@@ -32,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ userName = "Nome do usuário", onLogout
         <HeaderContainer ref={containerRef}>
             <ProfileButton onClick={toggle} aria-expanded={isOpen}>
                 <CircleUserRound />
-                <h2>{userName}</h2>
+                <h2>{username}</h2>
                 {isOpen? <ChevronDown /> : <ChevronUp />}
             </ProfileButton>
 

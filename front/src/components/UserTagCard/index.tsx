@@ -88,8 +88,8 @@ function dateToDdMmYyyy(dataIso: string): string {
 
   const TagInfo = [
     tag?.end_date ? dateToDdMmYyyy(tag?.end_date) : "",
-    tag?.vehicle?.model || "",
-    tag?.vehicle?.plate || "",
+    tag?.vehicle_plate || "",
+    tag?.current_user_email || "",
   ];
 
   const TagIcons = [Calendar1, Phone, Email];
@@ -107,11 +107,11 @@ function dateToDdMmYyyy(dataIso: string): string {
           <StatusIconWrapper>
 
             <TagName>
-              {tag?.solicited_tag_type == "temp"
+              {tag?.tag_type == "temp"
               ? "Credencial Provisória"
-              : tag?.solicited_tag_type == "eventual"
+              : tag?.tag_type == "eventual"
               ? "Liberação Eventual"
-              : tag?.solicited_tag_type == "service"
+              : tag?.tag_type == "service"
               ? "Selo de Serviço"
               : "Selo não informado"}
             </TagName>
@@ -133,7 +133,7 @@ function dateToDdMmYyyy(dataIso: string): string {
           </StatusIconWrapper>
         
           <TagType>
-            <p>possivelmente tag id</p>
+            <p>{tag?.tag_id}</p>
           </TagType>
         </TagTextGroup>
       </Cabecalho>
