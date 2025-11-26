@@ -33,3 +33,24 @@ def test_register_user_already_exists(client):
 
         assert response.status_code == 409
         assert response.json()["detail"] == "User already exists"
+
+def test_register_user_missing_fields(client):
+    user_data = {
+        "username": "pedrotete"
+    }
+    response = client.post("/api/users/register", json=user_data)
+    assert response.status_code == 422 
+
+def test_register_user_conflict_on_email(client):
+    user_data = {
+        "username": "ana_teste",
+        "password": "senha123"
+    }
+
+    with patch("api.routes.users.check_user_exists") as mock_check_user:
+        mock_check_user.return_value = {"id": 2, "name": "ana_teste"}
+
+        response = client.post("/api/users/register", json=user_data)
+
+        assert response.status_code == 409
+        assert response.json()["detail"] == "User already exists"

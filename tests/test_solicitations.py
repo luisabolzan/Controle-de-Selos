@@ -117,3 +117,23 @@ def test_update_solicitation_status_not_found(client):
     app.dependency_overrides = {}
     
 from unittest.mock import ANY as python_any
+
+def test_update_solicitation_status_invalid_input(client):
+    app.dependency_overrides[get_current_admin] = mock_user_admin
+    payload = {"approval": "not_a_boolean"}
+
+    response = client.patch("/api/solicitations/1", json=payload)
+
+    assert response.status_code == 422
+
+    app.dependency_overrides = {}
+
+def test_update_solicitation_status_unauthorized(client):
+    app.dependency_overrides[get_current_user] = mock_user_common
+    payload = {"approval": True}
+
+    response = client.patch("/api/solicitations/1", json=payload)
+
+    assert response.status_code == 403
+
+    app.dependency_overrides = {}
