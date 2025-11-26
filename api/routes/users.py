@@ -2,7 +2,7 @@ from fastapi import HTTPException, Depends, status, APIRouter
 from sqlalchemy.orm import Session
 
 from api.utils.security import get_password_hash
-from api.api_schemas import UserRegisterDTO, ResponseDTO
+from api.api_schemas import UserRegisterDTO
 from api.database_queries import check_user_exists
 from api.database_models import Users
 from api.database_access import get_db
@@ -28,4 +28,4 @@ def register(user: UserRegisterDTO, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     
-    return ResponseDTO(success=True, message="User registered successfully")
+    return {"message": "User registered successfully"}

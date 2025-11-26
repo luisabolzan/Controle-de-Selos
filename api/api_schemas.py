@@ -20,6 +20,9 @@ class SolicitationFilterParams(BaseModel):
     tag_type: Optional[str] = None # 'service', 'eventual', etc.
     status: Optional[SolicitationStatusEnum] = None
 
+class LoginResponseDTO(BaseModel):
+    message: Optional[str] = "Login successful"
+    isAdmin: bool
 
 class PaginatedResponse(BaseModel, Generic[T]):
     data: List[T] 
@@ -30,11 +33,6 @@ class PaginatedResponse(BaseModel, Generic[T]):
 
 class SolicitationApproval(BaseModel):
     approval: bool
-
-class ResponseDTO(BaseModel, Generic[T]):
-    success: bool
-    data: Optional[T] = None
-    message: Optional[str] = None
 
 class ServiceTagDTO(BaseModel):
     vehicle_id: Optional[int] = None

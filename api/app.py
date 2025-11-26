@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .api_schemas import TagDTO, ResponseDTO
+from .api_schemas import TagDTO
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routes.solicitations import solicitations_router
@@ -28,12 +28,6 @@ app.add_middleware(
 app.include_router(solicitations_router)
 app.include_router(auth_router)
 app.include_router(users_router)
-
-def success_response(data: any) -> ResponseDTO:
-    return ResponseDTO(success=True, data=data, message="success")
-
-def failed_response(message: str) -> ResponseDTO:
-    return ResponseDTO(success=False, message=message, data=None)
 
 @app.get('/api/tags')
 def get_tags() -> list[TagDTO]: 
