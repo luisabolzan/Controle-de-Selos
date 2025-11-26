@@ -1,9 +1,9 @@
-from pytest import Session
+from sqlalchemy.orm import Session
 from math import ceil
 from api.api_schemas import PaginatedResponse, ServiceTagDTO, ServiceTagSolicitationDTO, ResponseDTO, SolicitationDTO, SolicitationApproval, SolicitationFilterParams
 from api.database_queries import create_service_tag_solicitation, get_solicitations_filtered, set_solicitation_approval_status
 from api.database_models import Users
-from api.utils.security import get_current_user
+from api.utils.security import get_current_user, get_current_admin
 from api.database_access import get_db
 
 from fastapi import APIRouter, Depends
@@ -39,12 +39,9 @@ def add_service_solicitation(
 def get_solicitations(
     filters: SolicitationFilterParams = Depends(), 
     db: Session = Depends(get_db),
-    current_user: Users = Depends(get_current_user)
+    current_user: Users = Depends(get_current_admin)
 ):
 
-    if not current_user.is_admin:
-        return failed_response(message="Unauthorized")
-    
     items, total = get_solicitations_filtered(db, filters)
     total_pages = ceil(total / filters.size) if filters.size > 0 else 0
     
@@ -60,11 +57,9 @@ def get_solicitations(
 def update_solicitation_status(
     solicitation_id: int, body: SolicitationApproval,
     session=Depends(get_db),
-    current_user: Users = Depends(get_current_user)) -> ResponseDTO[None]:
+    current_user: Users = Depends(get_current_admin)) -> ResponseDTO[None]:
     try:
-        if not current_user.is_admin:
-            raise ValueError
-        result = set_solicitation_approval_status(solicitation_id, body.approval, session=session)
+        set_solicitation_approval_status(solicitation_id, body.approval, session=session)
         return success_response(data=None)
     except ValueError as e:
         print(f"Erro ao atualizar solicitação: {e}")
