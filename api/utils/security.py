@@ -25,7 +25,7 @@ def verify_password(plain:str, hashed:str):
     return pwd_context.verify(plain, hashed)
 
 def get_password_hash(password:str):
-    return pwd_context.has(password)
+    return pwd_context.hash(password)
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -54,15 +54,15 @@ def get_current_user(
     
     try:
         payload = jwt.decode(token=token, key=SECRET_KEY, algorithms=[ALGORITHM])
-        email:str = payload.get("sub")
+        username:str = payload.get("sub")
         
-        if email is None:
+        if username is None:
             raise credentials_exception
     except JWTError as e:
         print("JWT Error Detail: ", e)
         raise credentials_exception
     
-    user = check_user_exists(email, db)
+    user = check_user_exists(username, db)
     
     if user is None:
         raise credentials_exception

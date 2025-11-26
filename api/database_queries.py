@@ -75,8 +75,8 @@ def get_solicitations_filtered(session: Session, current_user: Users, filters: S
 
     return items, total_filtered
 
-def check_user_exists(email, session: Session) -> Users:
-    return session.query(Users).filter(Users.email == email).first()
+def check_user_exists(username, session: Session) -> Users:
+    return session.query(Users).filter(Users.name == username).first()
 
 def create_eventual_tag_solicitation(solicitation: EventualTagSolicitationDTO, session: Session):
     vehicle = Vehicles(
