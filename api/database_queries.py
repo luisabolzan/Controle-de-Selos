@@ -33,8 +33,12 @@ def set_solicitation_approval_status(solicitation_id: int, approved: bool, sessi
     print(f" Solicitação ID {solicitation_id} atualizada para {'aprovada' if approved else 'rejeitada'}.")
     return solicitation
 
-def get_solicitations_filtered(session: Session, filters: SolicitationFilterParams):
+def get_solicitations_filtered(session: Session, current_user: Users, filters: SolicitationFilterParams):
     query = session.query(Solicitation).join(Users).outerjoin(Vehicles)
+
+    # if user is not admin, get only their solicitations
+    if current_user.is_admin == False:
+        query = query.filter(Solicitation.user_id == current_user.user_id) 
 
     # name filter
     if filters.name:
