@@ -32,10 +32,10 @@ def add_service_solicitation(
 def get_solicitations(
     filters: SolicitationFilterParams = Depends(), 
     session: Session = Depends(get_db),
-    current_user: Users = Depends(get_current_user)
+    current_user: Users = Depends(get_current_admin)
 ):
 
-    items, total = get_solicitations_filtered(session, current_user, filters)
+    items, total = get_solicitations_filtered(session, filters, current_user = None)
     total_pages = ceil(total / filters.size) if filters.size > 0 else 0
     
     return PaginatedResponse(
@@ -45,6 +45,25 @@ def get_solicitations(
         size=filters.size,
         pages=total_pages
     )
+
+@solicitations_router.get('/me', response_model=PaginatedResponse[SolicitationDTO])
+def get_solicitations(
+    filters: SolicitationFilterParams = Depends(), 
+    session: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    
+    items, total = get_solicitations_filtered(session, filters, current_user = current_user)
+    total_pages = ceil(total / filters.size) if filters.size > 0 else 0
+    
+    return PaginatedResponse(
+        data=items,
+        total=total,
+        page=filters.page,
+        size=filters.size,
+        pages=total_pages
+    )
+
 
 @solicitations_router.patch('/{solicitation_id}', status_code= status.HTTP_200_OK)
 def update_solicitation_status(
