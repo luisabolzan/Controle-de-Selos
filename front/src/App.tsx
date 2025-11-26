@@ -6,6 +6,8 @@ import ApproveRequest from './views/ApproveRequest';
 import EventualTagRequest from './views/EventualTagRequest';
 import EventualTagRequest2 from './views/EventualTagRequest2'; 
 import EventualTagRequest3 from './views/EventualTagRequest3'; 
+import TempTagRequest from './views/TempTagRequest';
+import TempTagRequest2 from './views/TempTagRequest2';
 import Login from './views/Login';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -19,6 +21,8 @@ function App() {
         <Route path="/eventual" element={<EventualTagRequest />} />
         <Route path="/eventual2" element={<EventualTagRequest2 />} />
         <Route path="/eventual3" element={<EventualTagRequest3 />} />
+        <Route path="/temp" element={<TempTagRequest />} />
+        <Route path="/temp2" element={<TempTagRequest2 />} />
         <Route path='/approve' element={<ApproveRequest/>}/>
         <Route path='/login' element={<Login/>}/>
       </Routes>

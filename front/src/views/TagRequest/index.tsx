@@ -20,7 +20,7 @@ const TagRequest = () => {
     const handleUserAction = (selected: string) => {
         if (selected === "Selo de Serviço") navigate("/service");
         if (selected === "Liberação Eventual") navigate("/eventual");
-        if (selected === "Credencial Provisória") navigate("/");
+        if (selected === "Credencial Provisória") navigate("/temp");
     };
 
     const currentUserOptions = ["Selo de Serviço", "Liberação Eventual", "Credencial Provisória"];
