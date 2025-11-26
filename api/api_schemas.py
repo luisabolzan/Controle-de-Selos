@@ -62,6 +62,13 @@ class EventualTagDTO(BaseModel):
 class EventualTagSolicitationDTO(EventualTagDTO):
     user_id: int
 
+class TemporaryTagDTO(BaseModel):
+    driver: DriverDTO
+    vehicle: SolicitationVehicleDTO
+
+class TemporaryTagSolicitationDTO(TemporaryTagDTO):
+    user_id: int
+
 # More Generic DTO for visualization purposes
 # Don't use this for creating or updating records
 class SolicitationDTO(BaseModel):

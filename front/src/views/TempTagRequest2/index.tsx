@@ -19,6 +19,7 @@ import SuccessToast from "../../components/Toast";
 import GenericForms from "../../components/GenericForms";
 
 import { DateRangeValue, DateRangeError, DateRangeErrorMessage } from '../../components/DateRangeSelector/types';
+import { createTemporaryTagRequest } from "../../api/functions";
 
 // import {createTempTagRequest2} from '../../api/functions'  
 
@@ -67,50 +68,49 @@ const TempTagRequest2 = () => {
     };
 
     const handleSubmit = async () => {
-        // // Limpa erros antigos antes de tentar novamente
-        // setSubmitError(null);
+        // Limpa erros antigos antes de tentar novamente
+        setSubmitError(null);
 
-        // // 1. Validação do formulário no frontend
-        // const finalVerification = verifyDateRange(dateRange);
-        // if (finalVerification.errors.start || finalVerification.errors.end) {
-        //     setErrors(finalVerification.errors);
-        //     setErrorMessages(finalVerification.errorMessages);
-        //     return; // Interrompe a função se houver erros de validação
-        // }
+        setIsLoading(true); // Inicia o feedback de carregamento
+        await sleep(1000);
+        try {
+            // 'await' espera a requisição terminar
+            const result = await createTemporaryTagRequest({
+                driver: {
+                    name: nameState,
+                    surname: surnameState,
+                    license_number: cnhState
+                },
+                vehicle: {
+                    plate: plate,
+                    model: model,
+                    color: color
+                }
+            });
+
+            //mostra toast de selo solicitado com sucesso
+            resetToast();
+            setShowToast(true);
+
+            showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+            hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+            fullCloseTimeoutRef.current = setTimeout(() => {
+            setShowToast(false);
+            setToastType(null);
+            }, 3500);
+
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+
+        } catch (error) {
+            console.error('Falha ao criar a solicitação:', error);
+            // Mostra uma mensagem de erro genérica para o usuário
+            setErrorMessage('Ocorreu um erro ao enviar sua solicitação. Tente novamente.');
         
-        // console.log('Dados válidos! Enviando para o banco:', dateRange);
-        // setIsLoading(true); // Inicia o feedback de carregamento
-        // await sleep(1000);
-        // try {
-        //     // 'await' espera a requisição terminar
-        //     const result = await createServiceTagRequest({
-        //         startDate: dateToYyyyMmDd(dateRange.start),
-        //         endDate: dateToYyyyMmDd(dateRange.end),
-        //     });
-
-        //     //mostra toast de selo solicitado com sucesso
-        //     resetToast();
-        //     setShowToast(true);
-
-        //     showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-        //     hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-        //     fullCloseTimeoutRef.current = setTimeout(() => {
-        //     setShowToast(false);
-        //     setToastType(null);
-        //     }, 3500);
-
-        //     setTimeout(() => {
-        //         window.location.href = '/';
-        //     }, 2000);
-
-        // } catch (error) {
-        //     console.error('Falha ao criar a solicitação:', error);
-        //     // Mostra uma mensagem de erro genérica para o usuário
-        //     setErrorMessage('Ocorreu um erro ao enviar sua solicitação. Tente novamente.');
-        
-        // } finally {
-        //     setIsLoading(false); // Para o feedback de carregamento
-        // }
+        } finally {
+            setIsLoading(false); // Para o feedback de carregamento
+        }
     };
 
     const navigate = useNavigate();

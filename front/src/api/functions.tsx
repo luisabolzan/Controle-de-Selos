@@ -59,6 +59,14 @@ export const createEventualTagRequest = async (data: { startDate: string; endDat
     return await apiFetch('/solicitations/eventual', REQUEST_METHODS.POST, requestData);
 };
 
+export const createTemporaryTagRequest = async (data: { driver: { name: string; surname: string; license_number: string; }; vehicle: { plate: string; model: string; color: string; }; }) => {
+    const requestData = {
+        driver: data.driver,
+        vehicle: data.vehicle
+    };
+    return await apiFetch('/solicitations/temporary', REQUEST_METHODS.POST, requestData);
+};
+
 
 export const getAllSolicitations = async (filters: FilterOptions) => {
     const params = new URLSearchParams();

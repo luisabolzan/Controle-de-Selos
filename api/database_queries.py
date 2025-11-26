@@ -1,4 +1,5 @@
-from .api_schemas import ServiceTagSolicitationDTO, SolicitationFilterParams, SolicitationStatusEnum, EventualTagSolicitationDTO
+from .api_schemas import ServiceTagSolicitationDTO, SolicitationFilterParams, SolicitationStatusEnum, EventualTagSolicitationDTO, TemporaryTagSolicitationDTO
+from sqlalchemy.sql import text
 from .database_models import Solicitation, Users, Vehicles
 from sqlalchemy import func, or_, and_
 from sqlalchemy.orm import joinedload, Session
@@ -16,6 +17,7 @@ def create_service_tag_solicitation(solicitation: ServiceTagSolicitationDTO, ses
     )
     session.add(new_solicitation)
     session.commit()
+    
     print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
     return new_solicitation
 
@@ -27,6 +29,7 @@ def set_solicitation_approval_status(solicitation_id: int, approved: bool, sessi
     solicitation.is_approved = approved
     solicitation.reviewed = True
     session.commit()
+
     print(f" Solicitação ID {solicitation_id} atualizada para {'aprovada' if approved else 'rejeitada'}.")
     return solicitation
 
@@ -93,5 +96,32 @@ def create_eventual_tag_solicitation(solicitation: EventualTagSolicitationDTO, s
     )
     session.add(new_solicitation)
     session.commit()
+
+    print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
+    return new_solicitation
+
+def create_temporary_tag_solicitation(solicitation: TemporaryTagSolicitationDTO, session: Session):
+    vehicle = Vehicles(
+        plate=solicitation.vehicle.plate,
+        model=solicitation.vehicle.model,
+        color=solicitation.vehicle.color
+    )
+
+    session.add(vehicle)
+    session.commit()
+
+    new_solicitation = Solicitation(
+        creation_date=func.now(),
+        is_approved=False,
+        reviewed=False,
+        start_date=func.now(),
+        end_date=func.now() + text("interval '6 months'"),  # Assuming temporary tags last for one semester
+        solicited_tag_type='temp',
+        vehicle_id=vehicle.vehicle_id,
+        user_id=solicitation.user_id
+    )
+    session.add(new_solicitation)
+    session.commit()
+
     print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
     return new_solicitation
