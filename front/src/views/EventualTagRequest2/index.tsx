@@ -2,6 +2,9 @@ import { Tag } from "lucide-react";
 import React from "react";
 import { useEffect, useState, useRef } from "react";
 
+import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+
 import {MainContainer, Separator, SubTitle, ServiceContainer, FormContainer, ButtonContainer} from "./styles";
 
 import { useMediaQuery } from '../../hooks/useMediaQuery';
@@ -13,19 +16,26 @@ import Header from "../../components/Header";
 import GenericButton from "../../components/GenericButton";
 import DateRangeSelector from '../../components/DateRangeSelector';
 import SuccessToast from "../../components/Toast";
+import GenericForms from "../../components/GenericForms";
 
 import { DateRangeValue, DateRangeError, DateRangeErrorMessage } from '../../components/DateRangeSelector/types';
 
-import {createServiceTagRequest} from '../../api/functions'  
+// import {createEventualTagRequest2} from '../../api/functions'  
 
-const ServiceTagRequest = () => {
+const EventualTagRequest2 = () => {
+    
+    const location = useLocation();
+    const incoming = (location.state as { dateRange?: DateRangeValue } | null)?.dateRange;
+
+    const [dateRange, setDateRange] = useState<DateRangeValue>(() =>
+        incoming ?? { start: new Date(), end: null }
+    );
 
     const isMinWidth = useMediaQuery('(min-width: 1480px)');
 
-    const [dateRange, setDateRange] = useState<DateRangeValue>({
-        start: new Date(), // default=datetime.now()
-        end: null,
-    });
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
+    const [cnh, setCnh] = useState('');
 
     // Estados separados para os erros e mensagens
     const [errors, setErrors] = useState<DateRangeError>({ start: false, end: false });
@@ -57,63 +67,16 @@ const ServiceTagRequest = () => {
         setDateRange(newValue);
         
         // 2. Roda a verificação e atualiza os estados de erro
-        const verification = verifyDateRange(newValue, false);
+        const verification = verifyDateRange(newValue, true);
         setErrors(verification.errors);
         setErrorMessages(verification.errorMessages);
     };
 
     const handleSubmit = async () => {
-        // Limpa erros antigos antes de tentar novamente
-        setSubmitError(null);
 
-        // 1. Validação do formulário no frontend
-        const finalVerification = verifyDateRange(dateRange);
-        if (finalVerification.errors.start || finalVerification.errors.end) {
-            setErrors(finalVerification.errors);
-            setErrorMessages(finalVerification.errorMessages);
-            return; // Interrompe a função se houver erros de validação
-        }
-        
-        console.log('Dados válidos! Enviando para o banco:', dateRange);
-        setIsLoading(true); // Inicia o feedback de carregamento
-        await sleep(1000);
-        try {
-            // 'await' espera a requisição terminar
-            const result = await createServiceTagRequest({
-                startDate: dateToYyyyMmDd(dateRange.start),
-                endDate: dateToYyyyMmDd(dateRange.end),
-            });
-
-            //mostra toast de selo solicitado com sucesso
-            resetToast();
-            setShowToast(true);
-
-            showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-            hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-            fullCloseTimeoutRef.current = setTimeout(() => {
-            setShowToast(false);
-            setToastType(null);
-            }, 3500);
-
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 2000);
-
-        } catch (error) {
-            console.error('Falha ao criar a solicitação:', error);
-            // Mostra uma mensagem de erro genérica para o usuário
-            setErrorMessage('Ocorreu um erro ao enviar sua solicitação. Tente novamente.');
-        
-        } finally {
-            setIsLoading(false); // Para o feedback de carregamento
-        }
     };
 
-    const dateToYyyyMmDd = (date: Date | null): string => {
-        if (!date) return '';
-        // toISOString() retorna "2025-10-13T...". O split('T')[0] pega apenas a parte da data.
-        return date.toISOString().split('T')[0];
-    };
+    const navigate = useNavigate();
 
     return(
         <ServiceContainer>
@@ -123,31 +86,43 @@ const ServiceTagRequest = () => {
                 <Header/>
 
                 <Separator>
-                    <h1> Solicitação de Selo de Serviço </h1>
+                    <h1> Solicitação de Liberação Eventual </h1>
                 </Separator>
 
                 <SubTitle>
-                    <h3>Indique a data de retirada e  previsão de entrega do selo, <span style={{fontWeight: 400}}> se houver selos disponiveis no período desejado sua solicitação será aceita automaticamente e seu selo estará disponivel na aba “Meus selos’ </span> </h3>
+                    <h3>Indique os dados do condutor associados a solicitação.</h3>
                 </SubTitle>
 
                 <FormContainer>           
-                    <DateRangeSelector
-                        value={dateRange}
-                        onChange={handleDateChange}
-                        error={errors}
-                        errorMessage={errorMessages}
+                    <GenericForms
+                        value= {{field1: name, field2: surname, field3: cnh}}
+                        onChange={(newValues) => {
+                            setName(newValues.field1);
+                            setSurname(newValues.field2);
+                            setCnh(newValues.field3);
+                        }}
+                        readOnly={false}
+                        error={{field1: false, field2: false}} // Ajuste conforme os campos necessários
+                        errorMessage={{field1: '', field2: '', field3:''}} // Ajuste conforme os campos necessários
+                        title1="Nome do Condutor"
+                        title2="Sobrenome do Condutor"
+                        title3="CNH do Condutor"
+                        placeholder1="Insira o nome do condutor"
+                        placeholder2="Insira o sobrenome do condutor"
+                        placeholder3="Insira a CNH do condutor"
                     />
-                    <h6>{errorMessage}</h6>
                 </FormContainer>
 
                 <ButtonContainer>
+                    
                     <GenericButton 
                         flexStatus="none" 
                         width="100%" 
                         height="60px" 
                         buttonType="Red" 
-                        content={isLoading ? 'Enviando...' : 'Solicitar Selo de Serviço'} 
-                        onClick={handleSubmit} isDisabled={isLoading}/>
+                        content="Próximo" 
+                        onClick={() => navigate('/eventual3', {state: { dateRange, name, surname, cnh }})}
+                        isDisabled={name && surname && cnh ? false : true}/>
                 </ButtonContainer>
 
                 {showToast && (
@@ -168,4 +143,4 @@ const ServiceTagRequest = () => {
     );
 };
 
-export default ServiceTagRequest;
+export default EventualTagRequest2;

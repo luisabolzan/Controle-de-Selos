@@ -3,6 +3,9 @@ import logo from './logo.svg';
 import TagRequest from './views/TagRequest';
 import ServiceTagRequest from './views/ServiceTagRequest';
 import ApproveRequest from './views/ApproveRequest';
+import EventualTagRequest from './views/EventualTagRequest';
+import EventualTagRequest2 from './views/EventualTagRequest2'; 
+import EventualTagRequest3 from './views/EventualTagRequest3'; 
 import Login from './views/Login';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -13,6 +16,9 @@ function App() {
         {/* Rotas temporariamente públicas */}
         <Route path="/" element={<TagRequest />} />
         <Route path="/service" element={<ServiceTagRequest />} />
+        <Route path="/eventual" element={<EventualTagRequest />} />
+        <Route path="/eventual2" element={<EventualTagRequest2 />} />
+        <Route path="/eventual3" element={<EventualTagRequest3 />} />
         <Route path='/approve' element={<ApproveRequest/>}/>
         <Route path='/login' element={<Login/>}/>
       </Routes>
