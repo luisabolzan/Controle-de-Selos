@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from math import ceil
-from api.api_schemas import PaginatedResponse, ServiceTagDTO, ServiceTagSolicitationDTO, SolicitationDTO, SolicitationApproval, SolicitationFilterParams, EventualTagDTO, EventualTagSolicitationDTO
-from api.database_queries import create_service_tag_solicitation, get_solicitations_filtered, set_solicitation_approval_status, create_eventual_tag_solicitation
+from api.api_schemas import PaginatedResponse, ServiceTagDTO, ServiceTagSolicitationDTO, SolicitationDTO, SolicitationApproval, SolicitationFilterParams, EventualTagDTO, EventualTagSolicitationDTO, TemporaryTagDTO, TemporaryTagSolicitationDTO
+from api.database_queries import create_service_tag_solicitation, get_solicitations_filtered, set_solicitation_approval_status, create_eventual_tag_solicitation, create_temporary_tag_solicitation
 from api.database_models import Users
 from api.utils.security import get_current_user, get_current_admin
 from api.database_access import get_db
@@ -74,5 +74,22 @@ def add_eventual_solicitation(
         )
         create_eventual_tag_solicitation(solicitation, session)
         return {"message": "Eventual Solicitation Created Successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+@solicitations_router.post('/temporary', status_code= status.HTTP_201_CREATED)
+def add_temporary_solicitation(
+    solicitation_data: TemporaryTagDTO,
+    session: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    try:
+        solicitation = TemporaryTagSolicitationDTO(
+            user_id=current_user.user_id,
+            driver=solicitation_data.driver,
+            vehicle=solicitation_data.vehicle
+        )
+        create_temporary_tag_solicitation(solicitation, session)
+        return {"message": "Temporary Solicitation Created Successfully"}
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
