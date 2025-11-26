@@ -11,6 +11,7 @@ from api.database_access import get_db
 
 load_dotenv()
 env = getenv("ENV", "dev")
+token_expire_hours = getenv("ACCESS_TOKEN_EXPIRE_HOURS", 48)
 
 auth_router = APIRouter(prefix='/api/auth')
 
@@ -40,7 +41,7 @@ def login(response:Response, form_data: OAuth2PasswordRequestForm = Depends(), s
         httponly=True,
         secure=env == "prod", 
         samesite="lax",
-        max_age= 60 * 60 * 48 # 48h 
+        max_age= 60 * 60 * int(token_expire_hours) 
     )
     
     return ResponseDTO(message="Login successful", success=True, data={"isAdmin": user.is_admin})
