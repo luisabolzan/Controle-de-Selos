@@ -35,7 +35,7 @@ const SideBar: React.FC<SideBarProps> = ({}: SideBarProps) => {
                     <ItemText visible={isExpanded} onClick={() => navigate("/")}>→ Nova Solicitação</ItemText>
                 </NavItem>
                 <NavItem>
-                    <ItemText visible={isExpanded} onClick={() => navigate("/")}>→ Minhas Solicitações</ItemText>
+                    <ItemText visible={isExpanded} onClick={() => navigate("/UserRequest")}>→ Minhas Solicitações</ItemText>
                 </NavItem>
                 <NavItem>
                     <ItemText visible={isExpanded} onClick={() => navigate("/")}>→ Meus Selos</ItemText>
