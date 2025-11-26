@@ -62,7 +62,7 @@ def populate():
     # Admin Fixo
     admin = Users(
         password_hash=default_pass,
-        cpf="00000000000",
+        # cpf="00000000000",
         email="admin@admin.com",
         name="Administrador do Sistema",
         phone_number="51999999999",
@@ -74,7 +74,7 @@ def populate():
     for _ in range(NUM_USERS):
         user = Users(
             password_hash=default_pass,
-            cpf=generate_cpf(),
+            # cpf=generate_cpf(),
             email=fake.unique.email(),
             name=fake.name(),
             phone_number=fake.cellphone_number(),

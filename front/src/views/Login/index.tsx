@@ -189,8 +189,8 @@ export const Login: React.FC = () => {
 
             {showToast && (
                 <SuccessToast
-                    message= "Solicitação Realizada"
-                    description= "Verifique seu selo na aba 'Meus Selos'"
+                    message= "Cadastro realizado com sucesso!"
+                    description= "Faça o login para continuar"
                     onClose={() => {
                         setToastVisible(false);
                         setTimeout(() => setShowToast(false), 1000);

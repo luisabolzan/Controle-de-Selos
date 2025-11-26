@@ -12,6 +12,7 @@ import UserRequest from './views/UserRequest';
 import UserTag from './views/UserTag';
 import Login from './views/Login';
 import SignUp from './views/SignUp';
+import RegisterdTags from './views/RegisteredTags';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path='/approve' element={<ApproveRequest/>}/>
         <Route path='/userRequest' element={<UserRequest/>}/>
         <Route path='/userTag' element={<UserTag/>}/>
+        <Route path='/registeredTags' element={<RegisterdTags/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<SignUp/>}/>
       </Routes>
