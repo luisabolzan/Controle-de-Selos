@@ -19,9 +19,10 @@ import Toast from "../../components/Toast";
 
 import { sleep } from "../../utils/functions";
 
-import { getAllSolicitations, updateSolicitationStatus } from "../../api/functions";
+import { getUserSolicitations, updateSolicitationStatus } from "../../api/functions";
 import { Request } from "../../components/UserRequestCard/types";
 import { useNavigate } from "react-router-dom";
+import { get } from "http";
 
 type ModalAction = {
   tipo: "excluir";
@@ -88,7 +89,7 @@ const UserRequest = () => {
         status: 'pendente' as const
       };
 
-      const response = await getAllSolicitations(filters);
+      const response = await getUserSolicitations(filters);
 
       setRequests(response.data);
       setTotalItems(response.total); // Importante para o componente de paginação saber o fim

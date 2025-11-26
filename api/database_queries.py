@@ -33,11 +33,11 @@ def set_solicitation_approval_status(solicitation_id: int, approved: bool, sessi
     print(f" Solicitação ID {solicitation_id} atualizada para {'aprovada' if approved else 'rejeitada'}.")
     return solicitation
 
-def get_solicitations_filtered(session: Session, current_user: Users, filters: SolicitationFilterParams):
+def get_solicitations_filtered(session: Session, filters: SolicitationFilterParams, current_user: Users = None):
     query = session.query(Solicitation).join(Users).outerjoin(Vehicles)
 
     # if user is not admin, get only their solicitations
-    if current_user.is_admin == False:
+    if current_user:
         query = query.filter(Solicitation.user_id == current_user.user_id) 
 
     # name filter
@@ -129,3 +129,15 @@ def create_temporary_tag_solicitation(solicitation: TemporaryTagSolicitationDTO,
 
     print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
     return new_solicitation
+
+def get_user_tags(user_id: int, session: Session):
+    tags = session.query(Solicitation).filter(
+        Solicitation.user_id == user_id,
+        Solicitation.is_approved == True,
+        Solicitation.reviewed == True,
+        or_(
+            and_(Solicitation.start_date <= func.now(), Solicitation.end_date >= func.now())
+        )
+    ).all()
+    
+    return tags

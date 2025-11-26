@@ -68,7 +68,13 @@ class TemporaryTagDTO(BaseModel):
 
 class TemporaryTagSolicitationDTO(TemporaryTagDTO):
     user_id: int
+    
+class GenericTagDTO(BaseModel):
+    tag: TemporaryTagDTO | EventualTagDTO | ServiceTagDTO
 
+class GenericTagResponse(BaseModel):
+    tags: List[GenericTagDTO]
+    
 # More Generic DTO for visualization purposes
 # Don't use this for creating or updating records
 class SolicitationDTO(BaseModel):
@@ -86,15 +92,17 @@ class SolicitationDTO(BaseModel):
     
     model_config = ConfigDict(from_attributes=True)
 
-class TagDTO(BaseModel):
-    tag_id: int
-    tag_type: str
 
 class VehicleDTO(BaseModel):
     vehicle_id: int
     plate: str
     model: Optional[str] = None
     color: Optional[str] = None
+
+class TagDTO(BaseModel):
+    tag_id: int
+    tag_type: str
+    vehicle: Optional[VehicleDTO] = None
 
 class UserDTO(BaseModel):
     user_id: int
