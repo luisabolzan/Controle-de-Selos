@@ -127,3 +127,7 @@ export const registerUser = async (username: string, password: string, name: str
     };
     return await apiFetch('/users/register', REQUEST_METHODS.POST, requestData, false);
 }
+
+export const getUserTags = async () =>{
+    return await apiFetch('/tags/my', REQUEST_METHODS.GET);
+}

@@ -68,7 +68,13 @@ class TemporaryTagDTO(BaseModel):
 
 class TemporaryTagSolicitationDTO(TemporaryTagDTO):
     user_id: int
+    
+class GenericTagDTO(BaseModel):
+    tag: TemporaryTagDTO | EventualTagDTO | ServiceTagDTO
 
+class GenericTagResponse(BaseModel):
+    tags: List[GenericTagDTO]
+    
 # More Generic DTO for visualization purposes
 # Don't use this for creating or updating records
 class SolicitationDTO(BaseModel):

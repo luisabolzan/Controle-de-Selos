@@ -129,3 +129,15 @@ def create_temporary_tag_solicitation(solicitation: TemporaryTagSolicitationDTO,
 
     print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
     return new_solicitation
+
+def get_user_tags(user_id: int, session: Session):
+    tags = session.query(Solicitation).filter(
+        Solicitation.user_id == user_id,
+        Solicitation.is_approved == True,
+        Solicitation.reviewed == True,
+        or_(
+            and_(Solicitation.start_date <= func.now(), Solicitation.end_date >= func.now())
+        )
+    ).all()
+    
+    return tags
