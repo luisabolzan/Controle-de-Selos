@@ -21,10 +21,10 @@ import { sleep } from "../../utils/functions";
 
 import { getAllSolicitations, updateSolicitationStatus } from "../../api/functions";
 import { Request } from "../../components/UserRequestCard/types";
-import { useDebounce } from "../../hooks/useDebounce";
+import { useNavigate } from "react-router-dom";
 
 type ModalAction = {
-  tipo: "aprovar" | "recusar";
+  tipo: "excluir";
   solicitationId: string;
 } | null;
 
@@ -120,7 +120,7 @@ const UserRequest = () => {
   const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [modalAction, setModalAction] = useState<ModalAction>(null);
 
-  const [toastType, setToastType] = useState<"aprovar" | "recusar" | null>(null);
+  const [toastType, setToastType] = useState<"excluir" | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
 
@@ -173,7 +173,7 @@ const UserRequest = () => {
   /**
    * Função para mostrar toast de sucesso
    */
-  const showSuccessToast = (tipo: "aprovar" | "recusar") => {
+  const showSuccessToast = (tipo: "excluir") => {
     resetToast();
     setToastType(tipo);
     setShowToast(true);
@@ -186,7 +186,7 @@ const UserRequest = () => {
     }, 3500);
   };
 
-  const openModal = (tipo: "aprovar" | "recusar", solicitationId: string) => {
+  const openModal = (tipo: "excluir" , solicitationId: string) => {
     resetToast();
     setModalAction({ tipo, solicitationId });
   };
@@ -195,12 +195,9 @@ const UserRequest = () => {
     if (!modalAction) return;
 
     try {
-      if (modalAction.tipo === "aprovar") {
+      if (modalAction.tipo === "excluir") {
         await approveSolicitation(modalAction.solicitationId);
-      } else if (modalAction.tipo === "recusar") {
-        await rejectSolicitation(modalAction.solicitationId);
       }
-
       await fetchRequests();
 
       showSuccessToast(modalAction.tipo);
@@ -208,10 +205,7 @@ const UserRequest = () => {
       // Se der erro, mostra toast de erro
       console.error("Erro na operação:", error);
 
-      const errorMessage =
-        modalAction.tipo === "aprovar"
-          ? "Erro ao aprovar Solicitação. Tente novamente."
-          : "Erro ao rejeitar Solicitação. Tente novamente.";
+      const errorMessage = "Erro ao excluir Solicitação. Tente novamente.";
 
       showErrorToastMessage(errorMessage);
     } finally {
@@ -241,6 +235,8 @@ const UserRequest = () => {
     setCurrentPage(1);
 
   };
+
+  const navigate = useNavigate();
 
   return (
     <ServiceContainer>
@@ -282,32 +278,20 @@ const UserRequest = () => {
                     key={request.solicitation_id}
                     request={request}
                     showApproveButtons={true}
-                    onApproveClick={() =>
-                      openModal("aprovar", request.solicitation_id)
+                    onDeleteClick={() =>
+                      openModal("excluir", request.solicitation_id)
                     }
-                    onRejectClick={() =>
-                      openModal("recusar", request.solicitation_id)
+                    onEditClick={() =>
+                      navigate('/')
                     }
                   />
                 ))}
 
               <ConfirmModal
                 isOpen={modalAction !== null}
-                title={
-                  modalAction?.tipo === "aprovar"
-                    ? "Tem certeza que deseja aprovar esta solicitação?"
-                    : "Tem certeza que deseja recusar esta solicitação?"
-                }
-                message={
-                  modalAction?.tipo === "aprovar"
-                    ? "Tem certeza de que deseja aprovar este selo?..."
-                    : "Uma vez recusada, a solicitação sairá da lista de avaliação."
-                }
-                confirmLabel={
-                  modalAction?.tipo === "aprovar"
-                    ? "Sim, Aprovar"
-                    : "Sim, Recusar"
-                }
+                title= "Tem certeza que deseja exlcuir esta solicitação?"
+                message= "Tem certeza de que deseja excluir esta solicitação? Após exlcuir essa solicitação o admnsitrador não poderá mais visualizá-la e aprová-la."
+                confirmLabel="Sim, Excluir"
                 cancelLabel="Cancelar"
                 onConfirm={handleConfirm}
                 onClose={() => setModalAction(null)}
@@ -316,10 +300,8 @@ const UserRequest = () => {
               {showToast && toastType && (
                 <Toast
                   type="success"
-                  message={`Solicitação ${
-                    toastType === "aprovar" ? "aprovada" : "recusada"
-                  } com sucesso!`}
-                  description={toastType === "aprovar" ? "Confirme o recebimento..." : "Status atualizado"}
+                  message= "Solicitação excluída com sucesso"
+                  description="Sua solicitação foi excluida e não será mais avaliada"
                   onClose={() => {
                     setToastVisible(false);
                     setTimeout(() => setShowToast(false), 300);
