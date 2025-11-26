@@ -138,3 +138,27 @@ def test_check_user_exists_by_name(mock_session):
 
     result = check_user_exists("usuario_teste", mock_session)
     assert result == mock_user
+
+def test_check_user_not_exists(mock_session):
+    mock_session.query.return_value.filter.return_value.first.return_value = None
+
+    result = check_user_exists("nonexistent_user", mock_session)
+    assert result is None
+
+def test_create_temporary_tag_solicitation(mock_session):
+    dto = MagicMock()
+    dto.user_id = 3
+    dto.start_date = datetime.now()
+    dto.end_date = datetime.now()
+    dto.vehicle.plate = "XYZ-9876"
+    dto.vehicle.model = "Civic"
+    dto.vehicle.color = "Preto"
+
+    result = create_temporary_tag_solicitation(dto, mock_session)
+
+    assert mock_session.add.call_count == 2
+    assert mock_session.commit.call_count == 2
+    
+    args, _ = mock_session.add.call_args
+    solicitation_obj = args[0]
+    assert solicitation_obj.solicited_tag_type == 'temp'
