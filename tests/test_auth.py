@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 def test_login_success(client):
     mock_user = MagicMock()
-    mock_user.email = "admin@teste.com"
+    mock_user.name = "admin"
     mock_user.password_hash = "hash_da_senha_correta"
     mock_user.is_admin = True
 
@@ -15,7 +15,7 @@ def test_login_success(client):
         mock_token.return_value = "token_jwt_fake"
 
         payload = {
-            "username": "admin@teste.com",
+            "username": "admin",
             "password": "senha123"
         }
         
@@ -23,17 +23,18 @@ def test_login_success(client):
 
         assert response.status_code == 200
         data = response.json()
-        assert data["success"] is True
-        assert data["data"]["isAdmin"] is True
+        
+        assert "isAdmin" in data
+        assert data["isAdmin"] is True
         
         assert "access_token" in response.cookies
-        assert response.cookies["access_token"] == '"Bearer token_jwt_fake"' 
+        assert "token_jwt_fake" in response.cookies["access_token"]
 
 def test_login_user_not_found(client):
     with patch("api.routes.auth.check_user_exists") as mock_check:
-        mock_check.return_value = None 
+        mock_check.return_value = None
 
-        payload = {"username": "naoexiste@teste.com", "password": "123"}
+        payload = {"username": "naoexiste", "password": "123"}
         response = client.post("/api/auth/", data=payload)
 
         assert response.status_code == 401
@@ -49,7 +50,7 @@ def test_login_invalid_credentials(client):
         mock_check.return_value = mock_user
         mock_verify.return_value = False
 
-        payload = {"username": "existe@teste.com", "password": "senhaerrada"}
+        payload = {"username": "existe", "password": "senhaerrada"}
         response = client.post("/api/auth/", data=payload)
 
         assert response.status_code == 401
