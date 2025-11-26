@@ -37,6 +37,7 @@ const ApproveRequest = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isBarExpanded, setIsBarExpanded] = useState<boolean>(true);
 
   // --- ESTADOS DE FILTRO ---
   const [selectedTag, setSelectedTag] = useState<string>("");
@@ -52,6 +53,33 @@ const ApproveRequest = () => {
     else if (window.innerWidth >= 1612) return 6;
     else return 4;
   };
+
+  const getRequestsPerPage2 = () => {
+      if (window.innerWidth >= 1900) return 6;
+      else if (window.innerWidth >= 1612) return 4;
+      else return 2;
+   };
+  
+    // mudar a quantidade de itens por pagina quando a side bar ocupar mais espaço no container
+    useEffect(() => {
+      const handleSidebarChange = (e: Event) => {
+        const ev = e as CustomEvent<{ expanded?: boolean }>;
+        const expanded = ev.detail?.expanded;
+        if (expanded === true) {
+          setRequestsPerPage(getRequestsPerPage2());
+          setIsBarExpanded(true)
+        } else {
+          setRequestsPerPage(getRequestsPerPage());
+          setIsBarExpanded(false)
+        }
+      };
+  
+      window.addEventListener('sidebarToggle', handleSidebarChange as EventListener);
+  
+      return () => {
+        window.removeEventListener('sidebarToggle', handleSidebarChange as EventListener);
+      };
+    }, []);
 
   const [requestsPerPage, setRequestsPerPage] = useState<number>(getRequestsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
@@ -275,7 +303,7 @@ const ApproveRequest = () => {
               <h3> Não há solicitações pendentes </h3>
             )}
             
-            <RequestCardsContainer>
+            <RequestCardsContainer isBarExpanded={isBarExpanded}>
               {requests.length > 0 &&
                 requests.map((request) => (
                   <RequestCard

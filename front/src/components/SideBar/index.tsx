@@ -9,18 +9,31 @@ const SideBar: React.FC<SideBarProps> = ({}: SideBarProps) => {
     const compactMenuRef = useRef<HTMLDivElement | null>(null);
 
     function toggle() {
-        setIsExpanded(s => !s);
+        setIsExpanded(s => {
+            const next = !s;
+            window.dispatchEvent(new CustomEvent('sidebarToggle', { detail: { expanded: next } }));
+            return next;
+        });
     }
+
+   useEffect(() => {
+     document.body.classList.toggle('sidebar-expanded', isExpanded);
+     return () => { document.body.classList.remove('sidebar-expanded'); };
+   }, [isExpanded]);
+
 
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
             if (!compactMenuRef.current) return;
             if (!(e.target instanceof Node)) return;
-            if (!compactMenuRef.current.contains(e.target)) setIsExpanded(false);
+            if (!compactMenuRef.current.contains(e.target)) {
+                setIsExpanded(false);
+                window.dispatchEvent(new CustomEvent('sidebarToggle', { detail: { expanded: false } }));
+            }
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+     }, []);
 
     const navigate = useNavigate();
 
