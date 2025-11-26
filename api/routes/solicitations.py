@@ -32,10 +32,10 @@ def add_service_solicitation(
 def get_solicitations(
     filters: SolicitationFilterParams = Depends(), 
     session: Session = Depends(get_db),
-    current_user: Users = Depends(get_current_admin)
+    current_user: Users = Depends(get_current_user)
 ):
 
-    items, total = get_solicitations_filtered(session, filters)
+    items, total = get_solicitations_filtered(session, current_user, filters)
     total_pages = ceil(total / filters.size) if filters.size > 0 else 0
     
     return PaginatedResponse(
