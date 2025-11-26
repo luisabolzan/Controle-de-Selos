@@ -55,3 +55,34 @@ def test_login_invalid_credentials(client):
 
         assert response.status_code == 401
         assert response.json()["detail"] == "Invalid Credentials"
+
+def test_login_non_admin_success(client):
+
+    mock_user = MagicMock()
+    mock_user.name = "user_comum"
+    mock_user.password_hash = "hash_do_usuario"
+    mock_user.is_admin = False 
+
+    with patch("api.routes.auth.check_user_exists") as mock_check, \
+         patch("api.routes.auth.verify_password") as mock_verify, \
+         patch("api.routes.auth.create_access_token") as mock_token:
+        
+        mock_check.return_value = mock_user
+        mock_verify.return_value = True
+        mock_token.return_value = "token_comum_fake"
+
+        payload = {
+            "username": "user_comum",
+            "password": "senha456"
+        }
+        
+        response = client.post("/api/auth/", data=payload)
+
+        assert response.status_code == 200
+        data = response.json()
+        
+        assert "isAdmin" in data
+        assert data["isAdmin"] is False
+
+        assert "access_token" in response.cookies
+        assert "token_comum_fake" in response.cookies["access_token"]
