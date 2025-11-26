@@ -1,8 +1,8 @@
 import React from "react";
-import { useEffect, useState, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { LoginContainer, ImageStyle, LoginForm, HeaderForm, UsernameIpunt, DomainBox, InputsContainer, TextContainer, AltOptions} from "./styles";
+import { SignUpContainer, ImageStyle, SignUpForm, HeaderForm, UsernameIpunt, DomainBox, InputsContainer, TextContainer, AltOptions} from "./styles";
 
 import logoINF from '../../assets/logo-INF-Black.png';
 
@@ -13,50 +13,23 @@ import { validatePassword } from "../../utils/validators";
 import { User } from "lucide-react";
 import ActionText from "../../components/ActionText";
 import GenericButton from "../../components/GenericButton";
-import SuccessToast from "../../components/Toast";
+import { sleep } from "../../utils/functions";
 
-import { authenticateUser } from "../../api/functions";
+import { authenticateUser, registerUser } from "../../api/functions";
 
-
-export const Login: React.FC = () => {
+export const SignUp: React.FC = () => {
 
     const [user, setUser] = useState('');
-
-    const location = useLocation();
-    const fromSignUp = (location.state as { fromSignUp?: boolean } | null)?.fromSignUp || false;
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+    const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState('');
 
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-
-    const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const [toastType, setToastType] = useState< "excluir" | null>(null);
-    const [showToast, setShowToast] = useState(false);
-    const [toastVisible, setToastVisible] = useState(false);
-
-    const resetToast = () => {
-        setToastVisible(false);
-
-        if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-        if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
-
-        setShowToast(false);
-        setToastType(null);
-    };
-
-    useEffect(() => {
-        if (fromSignUp) {
-            setShowToast(true);
-            setToastVisible(true);
-        }
-    }, [fromSignUp]);
 
     const verifyPassword = (password: string) => {
         
@@ -71,34 +44,51 @@ export const Login: React.FC = () => {
 
     const handleSubmit = async () => {
         setIsLoading(true);
+        await sleep(500);
         setError(false);
         setErrorMessage('');
 
         try{
-            const response = await authenticateUser(user, password);
-            localStorage.setItem('isAdmin', response.isAdmin);            
-            
+            const response = await registerUser(user, password);
             setError(false);
             setPassword("")
-            navigate("/")
+            setConfirmPassword("")
+            navigate("/login", { state: { fromSignUp: true} });
         } catch (error) {
             setError(true);
-            setErrorMessage("Falha na autenticação. Verifique seu usuário e senha.");
+            setErrorMessage("Falha no cadastro. Verifique seus dados e tente novamente.");
         } finally {
             setIsLoading(false);
         }
     }
 
+    const verifyConfirmPassword = (confirmPassword: string) => {
+
+    if (confirmPassword.trim() === '') {
+        setConfirmPasswordError(false);
+        setConfirmPasswordErrorMessage('');
+        return;
+    }
+    if (confirmPassword !== password) {
+        setConfirmPasswordError(true);
+        setConfirmPasswordErrorMessage('As senhas não coincidem');
+    } else {
+        setConfirmPasswordError(false);
+        setConfirmPasswordErrorMessage('');
+    }
+
+  };
+
     return (
-        <LoginContainer>
+        <SignUpContainer>
             
             <ImageStyle src={logoINF} alt="Logo INF" />
 
-            <LoginForm>
+            <SignUpForm>
 
                 <HeaderForm>
-                    <h1>Fazer Login</h1>
-                    {error ? errorMessage : <h4>Bem-vindo ao Sistema de Controle de Selos do INF <br/> Por favor, faça o login para continuar  </h4> }
+                    <h1>Cadastre-se</h1>
+                    {error ? errorMessage : <h4>Insira seu e-mail @inf e crie uma senha para sua conta </h4> }
                 </HeaderForm>
                 
                 <InputsContainer>
@@ -108,7 +98,7 @@ export const Login: React.FC = () => {
                             title=""
                             required={true}
                             $fontSize="1rem" 
-                            placeholder="Login (ex: agbarcellos)"
+                            placeholder="SignUp (ex: agbarcellos)"
                             $width="100%"
                             value={user}
                             onChange={(e) => setUser(e.target.value)}
@@ -134,11 +124,30 @@ export const Login: React.FC = () => {
                         value={password}
                             onChange={(e) => {
                         setPassword(e.target.value);
+                        verifyPassword(e.target.value);
                         } }
                         error={passwordError}
                         errorMessage={passwordErrorMessage} 
                         visible={false}
-                        showError={false}
+                        showError={true}
+                    />
+
+                    <PasswordInput
+                        title=""
+                        required={true}
+                        isDisabled={false}
+                        $fontSize="1rem" 
+                        placeholder="Confirme sua senha aqui"
+                        $width="100%"
+                        value={confirmPassword}
+                            onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        verifyConfirmPassword(e.target.value);
+                        } }
+                        error={confirmPasswordError}
+                        errorMessage={confirmPasswordErrorMessage} 
+                        visible={false}
+                        showError={true}
                     />
                 </InputsContainer>
 
@@ -147,24 +156,13 @@ export const Login: React.FC = () => {
                     width="100%" 
                     height="41px" 
                     buttonType="Red" 
-                    content={isLoading ? 'Enviando...' : 'Fazer Login'} 
+                    content={isLoading ? 'Enviando...' : 'Criar Conta'} 
                     onClick={handleSubmit} 
-                    isDisabled={isLoading}
+                    isDisabled={isLoading || passwordError || confirmPasswordError || password === '' || confirmPassword === '' || user === ''}
                     fontSize="20px"
                 />
-                
+                    
                 <AltOptions>
-
-                    <ActionText
-                        key={"forgotPasswordActionText"}
-                        width="100%"
-                        fontSize="1rem"
-                        textColor="#553525"
-                        onClick={() => navigate("/")}
-                    >
-                    <h2>Esqueci minha senha</h2>
-
-                    </ActionText>
 
                     <TextContainer>
                         <div />
@@ -177,30 +175,18 @@ export const Login: React.FC = () => {
                         width="100%"
                         fontSize="1rem"
                         textColor="#553525"
-                        onClick={() => navigate("/")}
+                        onClick={() => navigate("/login")}
                     >
-                    <h2>Criar Conta</h2>
+                    <h2>Fazer Login</h2>
 
                     </ActionText>
 
                 </AltOptions>
 
-            </LoginForm>
+            </SignUpForm>
 
-            {showToast && (
-                <SuccessToast
-                    message= "Solicitação Realizada"
-                    description= "Verifique seu selo na aba 'Meus Selos'"
-                    onClose={() => {
-                        setToastVisible(false);
-                        setTimeout(() => setShowToast(false), 1000);
-                    }}
-                    isVisible={toastVisible}
-                />
-            )}
-
-        </LoginContainer>
+        </SignUpContainer>
     );
 }
 
-export default Login;
+export default SignUp;

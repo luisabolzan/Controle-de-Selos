@@ -12,7 +12,7 @@ export const StyledInput = styled.input<{ $width: string, $fontSize: string, $pa
   font-size: ${({ $fontSize }) => $fontSize};
   box-sizing: border-box;
   border: ${({ $error, $inputType }) => $error? "1px solid #FF3B30" : "1px solid #696969ff"};
-  color: #553525;
+  color: #000000;
   background-color: #FFFFFF;
   padding-top: 8px;
   padding-bottom: 8px;

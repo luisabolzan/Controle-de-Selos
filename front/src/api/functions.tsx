@@ -119,3 +119,15 @@ export const authenticateUser = async (username: string, password: string) => {
     throw error;
   }
 };
+
+export const registerUser = async (username: string, password: string) => {
+    const requestData = {
+        name: 'Usuario Teste',  
+        email: username + '@inf.ufrgs.br',         
+        cpf: '00000000000',    
+        phone_number: '51999999999',
+        username: username,
+        password: password,
+    };
+    return await apiFetch('/users/register', REQUEST_METHODS.POST, requestData, false);
+}

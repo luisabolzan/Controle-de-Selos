@@ -13,7 +13,7 @@ export const StyledInput = styled.input<{
   font-size: ${({ $fontSize }) => $fontSize};
   box-sizing: border-box;
   border: ${({ $error, $inputType }) =>
-    $error ? "1px solid #FF3B30" : $inputType === "Primário" ? "1px solid #706D6D" : "1px solid #706D6D"};
+    $error ? "1px solid #FF3B30" : "1px solid #000000" };
   color: #000000;
   background-color: ${({ $inputType }) => ($inputType === "Primário" ? "#ffffff" : "#FFFFFF")};
   padding-top: 8px;

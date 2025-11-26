@@ -11,6 +11,7 @@ import TempTagRequest2 from './views/TempTagRequest2';
 import UserRequest from './views/UserRequest';
 import UserTag from './views/UserTag';
 import Login from './views/Login';
+import SignUp from './views/SignUp';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path='/userRequest' element={<UserRequest/>}/>
         <Route path='/userTag' element={<UserTag/>}/>
         <Route path='/login' element={<Login/>}/>
+        <Route path='/signup' element={<SignUp/>}/>
       </Routes>
     </BrowserRouter>
   );
