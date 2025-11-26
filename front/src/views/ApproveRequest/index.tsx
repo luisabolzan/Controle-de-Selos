@@ -17,6 +17,8 @@ import PaginationButtons from "../../components/PaginationButtons";
 import ConfirmModal from "../../components/ConfirmModal";
 import Toast from "../../components/Toast";
 
+import { sleep } from "../../utils/functions";
+
 import { getAllSolicitations, updateSolicitationStatus } from "../../api/functions";
 import { Request } from "../../components/RequestCard/types";
 import { useDebounce } from "../../hooks/useDebounce";
@@ -41,9 +43,8 @@ const ApproveRequest = () => {
   const [plate, setPlate] = useState<string>("");
   const [name, setName] = useState<string>("");
 
-  // --- ESTADOS DE FILTRO ---
-    const debouncedName = useDebounce<string>(name, 200);
-    const debouncedPlate = useDebounce<string>(plate, 200);
+  // --- TRIGGER DO FILTRO ---
+  const [searchTrigger, setSearchTrigger] = useState(0);
 
   // --- ESTADOS DE PAGINAÇÃO ---
   const getRequestsPerPage = () => {
@@ -65,6 +66,7 @@ const ApproveRequest = () => {
   const fetchRequests = useCallback(async () => {
     try {
       setIsLoading(true);
+      await sleep(500);
       setError(false);
 
       const filters = {
@@ -88,7 +90,7 @@ const ApproveRequest = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, requestsPerPage, debouncedName, debouncedPlate, selectedTag]);
+  }, [currentPage, requestsPerPage, selectedTag, searchTrigger]);
 
 
   // 1. Busca dados sempre que paginação ou filtros mudam
@@ -225,13 +227,19 @@ const ApproveRequest = () => {
     setSelectedTag(filters.state);
     setPlate(filters.plate);
     setName(filters.name);
+
+    setSearchTrigger((prev) => prev + 1);
+    setCurrentPage(1);
   };
 
   const handleClearFilters = () => {
     setSelectedTag("");
     setPlate("");
     setName("");
+
+    setSearchTrigger((prev) => prev + 1);
     setCurrentPage(1);
+
   };
 
   return (
