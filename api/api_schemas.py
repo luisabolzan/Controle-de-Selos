@@ -42,6 +42,26 @@ class ServiceTagDTO(BaseModel):
 class ServiceTagSolicitationDTO(ServiceTagDTO):
     user_id: int
 
+
+class DriverDTO(BaseModel):
+    name: str
+    surname: str
+    license_number: str
+
+class SolicitationVehicleDTO(BaseModel):
+    plate: str
+    model: str
+    color: str
+
+class EventualTagDTO(BaseModel):
+    start_date: datetime
+    end_date: datetime
+    driver: DriverDTO
+    vehicle: SolicitationVehicleDTO
+
+class EventualTagSolicitationDTO(EventualTagDTO):
+    user_id: int
+
 # More Generic DTO for visualization purposes
 # Don't use this for creating or updating records
 class SolicitationDTO(BaseModel):

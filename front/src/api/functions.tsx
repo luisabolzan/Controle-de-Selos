@@ -49,6 +49,16 @@ export const createServiceTagRequest = async (data: { startDate: string; endDate
     return await apiFetch('/solicitations/service', REQUEST_METHODS.POST, requestData);
 };
 
+export const createEventualTagRequest = async (data: { startDate: string; endDate: string; driver: { name: string; surname: string; license_number: string; }; vehicle: { plate: string; model: string; color: string; }; }) => {
+    const requestData = {
+        start_date: data.startDate,
+        end_date: data.endDate,
+        driver: data.driver,
+        vehicle: data.vehicle
+    };
+    return await apiFetch('/solicitations/eventual', REQUEST_METHODS.POST, requestData);
+};
+
 
 export const getAllSolicitations = async (filters: FilterOptions) => {
     const params = new URLSearchParams();

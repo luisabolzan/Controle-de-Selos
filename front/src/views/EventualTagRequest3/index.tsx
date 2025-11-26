@@ -19,6 +19,7 @@ import SuccessToast from "../../components/Toast";
 import GenericForms from "../../components/GenericForms";
 
 import { DateRangeValue, DateRangeError, DateRangeErrorMessage } from '../../components/DateRangeSelector/types';
+import { createEventualTagRequest } from "../../api/functions";
 
 // import {createEventualTagRequest3} from '../../api/functions'  
 
@@ -82,50 +83,60 @@ const EventualTagRequest3 = () => {
     };
 
     const handleSubmit = async () => {
-        // // Limpa erros antigos antes de tentar novamente
-        // setSubmitError(null);
+        // Limpa erros antigos antes de tentar novamente
+        setSubmitError(null);
 
-        // // 1. Validação do formulário no frontend
-        // const finalVerification = verifyDateRange(dateRange);
-        // if (finalVerification.errors.start || finalVerification.errors.end) {
-        //     setErrors(finalVerification.errors);
-        //     setErrorMessages(finalVerification.errorMessages);
-        //     return; // Interrompe a função se houver erros de validação
-        // }
+        // 1. Validação do formulário no frontend
+        const finalVerification = verifyDateRange(dateRange);
+        if (finalVerification.errors.start || finalVerification.errors.end) {
+            setErrors(finalVerification.errors);
+            setErrorMessages(finalVerification.errorMessages);
+            return; // Interrompe a função se houver erros de validação
+        }
         
-        // console.log('Dados válidos! Enviando para o banco:', dateRange);
-        // setIsLoading(true); // Inicia o feedback de carregamento
-        // await sleep(1000);
-        // try {
-        //     // 'await' espera a requisição terminar
-        //     const result = await createServiceTagRequest({
-        //         startDate: dateToYyyyMmDd(dateRange.start),
-        //         endDate: dateToYyyyMmDd(dateRange.end),
-        //     });
+        console.log('Dados válidos! Enviando para o banco:', dateRange);
+        setIsLoading(true); // Inicia o feedback de carregamento
+        await sleep(1000);
+        try {
+            // 'await' espera a requisição terminar
+            const result = await createEventualTagRequest({
+                startDate: dateToYyyyMmDd(dateRange.start),
+                endDate: dateToYyyyMmDd(dateRange.end),
+                driver: {
+                    name: nameState,
+                    surname: surnameState,
+                    license_number: cnhState
+                },
+                vehicle: {
+                    model: model,
+                    color: color,
+                    plate: plate
+                }
+            });
 
-        //     //mostra toast de selo solicitado com sucesso
-        //     resetToast();
-        //     setShowToast(true);
+            //mostra toast de selo solicitado com sucesso
+            resetToast();
+            setShowToast(true);
 
-        //     showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-        //     hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-        //     fullCloseTimeoutRef.current = setTimeout(() => {
-        //     setShowToast(false);
-        //     setToastType(null);
-        //     }, 3500);
+            showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+            hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+            fullCloseTimeoutRef.current = setTimeout(() => {
+            setShowToast(false);
+            setToastType(null);
+            }, 3500);
 
-        //     setTimeout(() => {
-        //         window.location.href = '/';
-        //     }, 2000);
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
 
-        // } catch (error) {
-        //     console.error('Falha ao criar a solicitação:', error);
-        //     // Mostra uma mensagem de erro genérica para o usuário
-        //     setErrorMessage('Ocorreu um erro ao enviar sua solicitação. Tente novamente.');
+        } catch (error) {
+            console.error('Falha ao criar a solicitação:', error);
+            // Mostra uma mensagem de erro genérica para o usuário
+            setErrorMessage('Ocorreu um erro ao enviar sua solicitação. Tente novamente.');
         
-        // } finally {
-        //     setIsLoading(false); // Para o feedback de carregamento
-        // }
+        } finally {
+            setIsLoading(false); // Para o feedback de carregamento
+        }
     };
 
     const dateToYyyyMmDd = (date: Date | null): string => {
