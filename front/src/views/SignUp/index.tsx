@@ -20,6 +20,8 @@ import { authenticateUser, registerUser } from "../../api/functions";
 export const SignUp: React.FC = () => {
 
     const [user, setUser] = useState('');
+    const [name , setName] = useState('');
+    const [surname , setSurname] = useState('');
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -49,7 +51,7 @@ export const SignUp: React.FC = () => {
         setErrorMessage('');
 
         try{
-            const response = await registerUser(user, password);
+            const response = await registerUser(user, password, name, surname);
             setError(false);
             setPassword("")
             setConfirmPassword("")
@@ -112,6 +114,29 @@ export const SignUp: React.FC = () => {
                             <h5> @inf.ufrgs.br </h5>
 
                         </DomainBox>
+                    </UsernameIpunt>
+
+                    <UsernameIpunt>
+
+                        <BasicInput
+                            title=""
+                            required={true}
+                            $fontSize="1rem" 
+                            placeholder="Nome"
+                            $width="100%"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        <BasicInput
+                            title=""
+                            required={true}
+                            $fontSize="1rem" 
+                            placeholder="Sobrenome"
+                            $width="100%"
+                            value={surname}
+                            onChange={(e) => setSurname(e.target.value)}
+                        />
+
                     </UsernameIpunt>
 
                     <PasswordInput

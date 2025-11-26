@@ -120,9 +120,9 @@ export const authenticateUser = async (username: string, password: string) => {
   }
 };
 
-export const registerUser = async (username: string, password: string) => {
+export const registerUser = async (username: string, password: string, name: string, surname:string) => {
     const requestData = {
-        name: 'Usuario Teste',  
+        name: name + ' ' + surname,  
         email: username + '@inf.ufrgs.br',         
         cpf: '00000000000',    
         phone_number: '51999999999',
