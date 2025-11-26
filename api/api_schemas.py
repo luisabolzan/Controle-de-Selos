@@ -92,15 +92,17 @@ class SolicitationDTO(BaseModel):
     
     model_config = ConfigDict(from_attributes=True)
 
-class TagDTO(BaseModel):
-    tag_id: int
-    tag_type: str
 
 class VehicleDTO(BaseModel):
     vehicle_id: int
     plate: str
     model: Optional[str] = None
     color: Optional[str] = None
+
+class TagDTO(BaseModel):
+    tag_id: int
+    tag_type: str
+    vehicle: Optional[VehicleDTO] = None
 
 class UserDTO(BaseModel):
     user_id: int
