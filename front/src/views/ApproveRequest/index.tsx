@@ -55,6 +55,12 @@ const ApproveRequest = () => {
   const [requestsPerPage, setRequestsPerPage] = useState<number>(getRequestsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
 
+  const tagValues: Record<string, string> = {
+    "Selo de Serviço": "service",
+    "Liberação Eventual": "eventual",
+    "Credencial Provisória": "temp"
+  }
+
   // Usamos useCallback para evitar recriação da função em todo render
   const fetchRequests = useCallback(async () => {
     try {
@@ -66,7 +72,7 @@ const ApproveRequest = () => {
         size: requestsPerPage,
         name: name,
         plate: plate,
-        tag_type: selectedTag,
+        tag_type: tagValues[selectedTag],
         status: 'pendente' as const
       };
 
@@ -74,7 +80,6 @@ const ApproveRequest = () => {
 
       setRequests(response.data);
       setTotalItems(response.total); // Importante para o componente de paginação saber o fim
-      setCurrentPage(1);
 
     } catch (err) {
       setError(true);
@@ -220,8 +225,6 @@ const ApproveRequest = () => {
     setSelectedTag(filters.state);
     setPlate(filters.plate);
     setName(filters.name);
-    
-    setCurrentPage(1); 
   };
 
   const handleClearFilters = () => {
