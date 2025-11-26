@@ -200,7 +200,7 @@ export const SignUp: React.FC = () => {
                         width="100%"
                         fontSize="1rem"
                         textColor="#553525"
-                        onClick={() => navigate("/login")}
+                        onClick={() => navigate("/")}
                     >
                     <h2>Fazer Login</h2>
 

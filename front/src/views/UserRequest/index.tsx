@@ -257,6 +257,7 @@ const UserRequest = () => {
             plate={plate}
             setPlate={setPlate}
             name={name}
+            nameField={false}
             setName={setName}
             onSearch={handleSearch}
             onClearFilters={handleClearFilters}

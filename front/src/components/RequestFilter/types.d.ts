@@ -9,4 +9,5 @@ export interface IRequestFilter {
   hasBorder?: boolean;
   onSearch?: (filters: { name: string; plate: string; state: string }) => void;
   onClearFilters?: () => void;
+  nameField?: boolean;
 }

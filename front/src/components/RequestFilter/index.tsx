@@ -14,6 +14,7 @@ export default function RequestFilter({
   plate,
   setPlate,
   name,
+  nameField = true,
   setName,
   hasBorder = true,
   onSearch,
@@ -62,6 +63,8 @@ export default function RequestFilter({
 
       <FilterContainer>
 
+
+      {nameField ? (
         <BasicInput
           value={name}
           onChange={onChangeName}
@@ -72,7 +75,8 @@ export default function RequestFilter({
           title="Pesquise por Nome"
           required={false}
           $inputType="Secundário"
-        />
+        />) : null
+      }
 
         <BasicInput
           value={plate}

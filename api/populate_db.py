@@ -64,7 +64,7 @@ def populate():
         password_hash=default_pass,
         # cpf="00000000000",
         email="admin@admin.com",
-        name="Administrador do Sistema",
+        name="admin",
         phone_number="51999999999",
         is_admin=True,
         has_active_request=False

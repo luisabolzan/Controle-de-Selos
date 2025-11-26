@@ -80,7 +80,7 @@ export const Login: React.FC = () => {
             
             setError(false);
             setPassword("")
-            navigate("/")
+            navigate("/tagRequest")
         } catch (error) {
             setError(true);
             setErrorMessage("Falha na autenticação. Verifique seu usuário e senha.");

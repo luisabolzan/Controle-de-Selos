@@ -21,7 +21,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Rotas temporariamente públicas */}
-        <Route path="/" element={<TagRequest />} />
+        <Route path="/tagRequest" element={<TagRequest />} />
         <Route path="/service" element={<ServiceTagRequest />} />
         <Route path="/eventual" element={<EventualTagRequest />} />
         <Route path="/eventual2" element={<EventualTagRequest2 />} />
@@ -33,7 +33,7 @@ function App() {
         <Route path='/userTag' element={<UserTag/>}/>
         <Route path='/registeredTags' element={<RegisterdTags/>}/>
         <Route path='/serviceTagRegister' element={<ServiceTagRegister/>}/>
-        <Route path='/login' element={<Login/>}/>
+        <Route path='/' element={<Login/>}/>
         <Route path='/signup' element={<SignUp/>}/>
       </Routes>
     </BrowserRouter>
