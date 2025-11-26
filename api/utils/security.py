@@ -68,3 +68,13 @@ def get_current_user(
         raise credentials_exception
     
     return user
+
+def get_current_admin(
+    current_user: Users = Depends(get_current_user)
+) -> Users:
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User does not have enough privileges"
+        )
+    return current_user
