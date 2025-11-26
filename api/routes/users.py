@@ -11,17 +11,15 @@ users_router = APIRouter(prefix='/api/users')
 
 @users_router.post('/register', status_code=status.HTTP_201_CREATED)
 def register(user: UserRegisterDTO, db: Session = Depends(get_db)):
-    user_exists = check_user_exists(user.email, db) is not None
+    user_exists = check_user_exists(user.username, db) is not None
     
     if user_exists:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='User already exists')
 
     new_user = Users(
         password_hash=get_password_hash(user.password),
-        name=user.name,
-        email=user.email,
-        cpf=user.cpf,
-        phone_number=user.phone_number
+        name=user.username,
+        email=user.username + '@inf.ufrgs.br',
     )
     
     db.add(new_user)

@@ -102,7 +102,7 @@ class UserDTO(BaseModel):
     email: str
     has_active_request: Optional[bool] = False
 
-class UserRegisterDTO(UserDTO):
+class UserRegisterDTO(BaseModel):
     username: str
     password: str
     

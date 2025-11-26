@@ -34,7 +34,7 @@ def login(response:Response, form_data: OAuth2PasswordRequestForm = Depends(), s
             headers={"WWW-Authenticate": "Bearer"}
         )
     
-    token = create_access_token(data={"sub": user.email})
+    token = create_access_token(data={"sub": user.name})
     response.set_cookie(
         key="access_token",
         value=f"Bearer {token}",
