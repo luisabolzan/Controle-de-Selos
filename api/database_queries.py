@@ -1,4 +1,4 @@
-from .api_schemas import ServiceTagSolicitationDTO, SolicitationFilterParams, SolicitationStatusEnum
+from .api_schemas import ServiceTagSolicitationDTO, SolicitationFilterParams, SolicitationStatusEnum, EventualTagSolicitationDTO
 from .database_models import Solicitation, Users, Vehicles
 from sqlalchemy import func, or_, and_
 from sqlalchemy.orm import joinedload, Session
@@ -70,3 +70,28 @@ def get_solicitations_filtered(session: Session, filters: SolicitationFilterPara
 
 def check_user_exists(email, session: Session) -> Users:
     return session.query(Users).filter(Users.email == email).first()
+
+def create_eventual_tag_solicitation(solicitation: EventualTagSolicitationDTO, session: Session):
+    vehicle = Vehicles(
+        plate=solicitation.vehicle.plate,
+        model=solicitation.vehicle.model,
+        color=solicitation.vehicle.color
+    )
+
+    session.add(vehicle)
+    session.commit()
+
+    new_solicitation = Solicitation(
+        creation_date=func.now(),
+        is_approved=False,
+        reviewed=False,
+        start_date=solicitation.start_date,
+        end_date=solicitation.end_date,
+        solicited_tag_type='eventual',
+        vehicle_id=vehicle.vehicle_id,
+        user_id=solicitation.user_id
+    )
+    session.add(new_solicitation)
+    session.commit()
+    print(f"Solicitação criada com ID: {new_solicitation.solicitation_id}")
+    return new_solicitation

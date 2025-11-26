@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from math import ceil
-from api.api_schemas import PaginatedResponse, ServiceTagDTO, ServiceTagSolicitationDTO, SolicitationDTO, SolicitationApproval, SolicitationFilterParams
-from api.database_queries import create_service_tag_solicitation, get_solicitations_filtered, set_solicitation_approval_status
+from api.api_schemas import PaginatedResponse, ServiceTagDTO, ServiceTagSolicitationDTO, SolicitationDTO, SolicitationApproval, SolicitationFilterParams, EventualTagDTO, EventualTagSolicitationDTO
+from api.database_queries import create_service_tag_solicitation, get_solicitations_filtered, set_solicitation_approval_status, create_eventual_tag_solicitation
 from api.database_models import Users
 from api.utils.security import get_current_user, get_current_admin
 from api.database_access import get_db
@@ -57,3 +57,22 @@ def update_solicitation_status(
         return {"message": "Status Updated Successfully"}
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+@solicitations_router.post('/eventual', status_code= status.HTTP_201_CREATED)
+def add_eventual_solicitation(
+    solicitation_data: EventualTagDTO,
+    session: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    try:
+        solicitation = EventualTagSolicitationDTO(
+            user_id=current_user.user_id,
+            start_date=solicitation_data.start_date,
+            end_date=solicitation_data.end_date,
+            driver=solicitation_data.driver,
+            vehicle=solicitation_data.vehicle
+        )
+        create_eventual_tag_solicitation(solicitation, session)
+        return {"message": "Eventual Solicitation Created Successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
