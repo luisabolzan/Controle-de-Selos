@@ -8,7 +8,6 @@ os.environ["ACCESS_TOKEN_EXPIRE_HOURS"] = "24"
 os.environ["SECRET_KEY"] = "teste_secret_key_123" 
 os.environ["ALGORITHM"] = "HS256" 
 
-# Agora sim importamos o app
 from api.app import app
 from api.database_access import get_db
 
