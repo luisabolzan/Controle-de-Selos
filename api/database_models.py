@@ -12,7 +12,6 @@ class Users(Base):
     user_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     password_hash = Column(String(128), nullable=False)
 
-    cpf = Column(String(11), unique=True, nullable=False, index=True)
     email = Column(String(100), unique=True, nullable=False, index=True)
     name = Column(String(100), nullable=False)
     phone_number = Column(String(20), nullable=True)
