@@ -9,6 +9,14 @@ const REQUEST_METHODS ={
     PATCH: 'PATCH'
 }
 
+interface FilterOptions {
+    page?: number;
+    size?: number;
+    name?: string;
+    plate?: string;
+    tag_type?: string;
+    status?: 'pendente' | 'aprovado' | 'rejeitado' | '';
+}
 
 const apiFetch = async (endpoint: string, method: string, body?: object, useCredentials: boolean = true) => {
     try {
@@ -42,8 +50,19 @@ export const createServiceTagRequest = async (data: { startDate: string; endDate
 };
 
 
-export const getAllSolicitations = async () => {
-    const result = await apiFetch('/solicitations/', REQUEST_METHODS.GET);
+export const getAllSolicitations = async (filters: FilterOptions) => {
+    const params = new URLSearchParams();
+
+    // null fields are ignored
+    if (filters.page) params.append('page', filters.page.toString());
+    if (filters.size) params.append('size', filters.size.toString());
+    if (filters.name) params.append('name', filters.name);
+    if (filters.plate) params.append('plate', filters.plate);
+    if (filters.tag_type) params.append('tag_type', filters.tag_type);
+    if (filters.status) params.append('status', filters.status);
+
+    const result = await apiFetch(`/solicitations?${params.toString()}`, REQUEST_METHODS.GET);
+    
     return result; 
 };
 

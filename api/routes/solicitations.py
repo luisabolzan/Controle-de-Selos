@@ -1,24 +1,21 @@
-from api.api_schemas import ServiceTagDTO, ServiceTagSolicitationDTO, ResponseDTO, SolicitationDTO, SolicitationApproval
-from api.database_queries import create_service_tag_solicitation, get_all_solicitations, set_solicitation_approval_status
+from sqlalchemy.orm import Session
+from math import ceil
+from api.api_schemas import PaginatedResponse, ServiceTagDTO, ServiceTagSolicitationDTO, SolicitationDTO, SolicitationApproval, SolicitationFilterParams
+from api.database_queries import create_service_tag_solicitation, get_solicitations_filtered, set_solicitation_approval_status
 from api.database_models import Users
-from api.utils.security import get_current_user
+from api.utils.security import get_current_user, get_current_admin
 from api.database_access import get_db
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 
 solicitations_router = APIRouter(prefix='/api/solicitations')
 
-def success_response(data: any) -> ResponseDTO:
-    return ResponseDTO(success=True, data=data, message="success")
-
-def failed_response(message: str) -> ResponseDTO:
-    return ResponseDTO(success=False, message=message, data=None)
-
-@solicitations_router.post('/service')
+@solicitations_router.post('/service', status_code= status.HTTP_201_CREATED)
 def add_service_solicitation(
     solicitation_data: ServiceTagDTO,
-    session=Depends(get_db),
-    current_user: Users = Depends(get_current_user)) -> ResponseDTO[None]:
+    session: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
     try:
         solicitation = ServiceTagSolicitationDTO(
             user_id=current_user.user_id,
@@ -27,32 +24,36 @@ def add_service_solicitation(
             end_date=solicitation_data.end_date
         )
         create_service_tag_solicitation(solicitation, session)
-        return success_response(data=None)
+        return {"message": "Solicitation Created Successfully"}
     except ValueError as e:
-        print(f"Erro ao criar solicitação: {e}")
-        return failed_response(message=str(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
-@solicitations_router.get('/')
-def get_solicitations(current_user: Users = Depends(get_current_user),
-                      session=Depends(get_db)) -> ResponseDTO[list[SolicitationDTO]]:
-    try:
-        if not current_user.is_admin: 
-            raise ValueError
-        result = get_all_solicitations(session=session)
-        return success_response(data=result)
-    except ValueError as e:
-        print(f"Erro ao obter solicitações: {e}")
-        return failed_response(message=str(e))
+@solicitations_router.get('/', response_model=PaginatedResponse[SolicitationDTO])
+def get_solicitations(
+    filters: SolicitationFilterParams = Depends(), 
+    session: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_admin)
+):
 
-@solicitations_router.patch('/{solicitation_id}')
-def update_solicitation_status(solicitation_id: int, body: SolicitationApproval,
-                               session=Depends(get_db),
-                               current_user: Users = Depends(get_current_user)) -> ResponseDTO[None]:
+    items, total = get_solicitations_filtered(session, filters)
+    total_pages = ceil(total / filters.size) if filters.size > 0 else 0
+    
+    return PaginatedResponse(
+        data=items,
+        total=total,
+        page=filters.page,
+        size=filters.size,
+        pages=total_pages
+    )
+
+@solicitations_router.patch('/{solicitation_id}', status_code= status.HTTP_200_OK)
+def update_solicitation_status(
+    solicitation_id: int, body: SolicitationApproval,
+    session: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_admin)
+):
     try:
-        if not current_user.is_admin:
-            raise ValueError
-        result = set_solicitation_approval_status(solicitation_id, body.approval, session=session)
-        return success_response(data=None)
+        set_solicitation_approval_status(solicitation_id, body.approval, session=session)
+        return {"message": "Status Updated Successfully"}
     except ValueError as e:
-        print(f"Erro ao atualizar solicitação: {e}")
-        return failed_response(message=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
