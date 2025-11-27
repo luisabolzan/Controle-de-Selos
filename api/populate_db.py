@@ -16,11 +16,11 @@ fake = Faker('pt_BR') # Gera dados brasileiros (CPF, Nomes, etc)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Quantidade de dados para gerar
-NUM_USERS = 1000    
-NUM_VEHICLES = 1000
-NUM_TAGS = 1000
-NUM_SOLICITATIONS = 10000
-NUM_LOANS = 1000
+NUM_USERS = 5    
+NUM_VEHICLES = 5
+NUM_TAGS = 5
+NUM_SOLICITATIONS = 10
+NUM_LOANS = 3
 
 def get_engine_session():
     if not DATABASE_URL:

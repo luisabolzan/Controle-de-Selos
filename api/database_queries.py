@@ -7,7 +7,7 @@ from .api_schemas import (
     TagFilterParams
 )
 from sqlalchemy.sql import text
-from .database_models import Solicitation, Users, Vehicles
+from .database_models import Solicitation, Users, Vehicles, Tags
 from sqlalchemy import func, or_, and_
 from sqlalchemy.orm import joinedload, Session
 from typing import List
@@ -184,3 +184,14 @@ def get_tags_filtered(session: Session, filters: TagFilterParams, user_id: int =
                  .all()
 
     return items, total
+
+
+def return_tag(session: Session, tag_id: int):
+    tag = session.query(Tags)\
+        .filter(Tags.tag_id == tag_id, Tags.available == False).\
+            first()
+            
+    tag.available = True
+    session.commit()
+    
+    return tag

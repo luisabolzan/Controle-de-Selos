@@ -176,3 +176,8 @@ export const getUserSolicitations = async (filters: FilterOptions) => {
     
     return result; 
 }
+
+export const returnTag = async (tag_id: number) => {
+    const parsedId = Number(tag_id);
+    return await apiFetch(`/tags/return/${parsedId}`, REQUEST_METHODS.PATCH);
+}
