@@ -150,7 +150,7 @@ function dateToDdMmYyyy(dataIso: string): string {
 
       </InfoSection>
 
-      {showApproveButtons && request && (
+      {/* {showApproveButtons && request && (
         <RequestApproveButtonWrapper>
           <GenericButton
             buttonType="Red"
@@ -165,7 +165,8 @@ function dateToDdMmYyyy(dataIso: string): string {
           />
         </RequestApproveButtonWrapper>
       )}
-      
+       */}
+       
     </CardContainer>
   );
 };

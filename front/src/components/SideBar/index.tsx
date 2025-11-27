@@ -60,11 +60,11 @@ const SideBar: React.FC<SideBarProps> = ({}: SideBarProps) => {
                     </NavItem>
                 )}
 
-                {isAdmin && (
+                {/* {isAdmin && (
                     <NavItem>
                         <ItemText visible={isExpanded} onClick={() => navigate("/serviceTagRegister")}>→ Registrar Selo de Serviço</ItemText>
                     </NavItem>
-                )}
+                )} */}
 
                 {isAdmin && (
                     <NavItem>

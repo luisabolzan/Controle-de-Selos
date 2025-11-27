@@ -45,3 +45,12 @@ def login(response:Response, form_data: OAuth2PasswordRequestForm = Depends(), s
     )
     
     return LoginResponseDTO(isAdmin=user.is_admin, user=user.name)
+
+@auth_router.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(
+        key="access_token", 
+        path="/", 
+        samesite="lax" 
+    )
+    return {"message": "Logout realizado com sucesso"}

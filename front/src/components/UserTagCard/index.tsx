@@ -162,7 +162,7 @@ function dateToDdMmYyyy(dataIso: string): string {
         ):null}
 
       </InfoSection>
-
+{/* 
       {isAdmin ? (
         <TagApproveButtonWrapper>
           <GenericButton
@@ -177,7 +177,7 @@ function dateToDdMmYyyy(dataIso: string): string {
             isDisabled={tag?.current_username ? false : true}
           />
         </TagApproveButtonWrapper>
-      ):null}
+      ):null} */}
 
     </CardContainer>
   );

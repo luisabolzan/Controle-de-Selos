@@ -4,6 +4,8 @@ import { HeaderProps } from "./types";
 import { HeaderContainer, ProfileButton, DropdownContainer, DropdownMenu, DropdownItem } from "./styles";
 import { CircleUserRound, ChevronDown, LogOut, ChevronUp } from "lucide-react";
 import { useMemo } from "react";
+import { logoutUser } from "../../api/functions";
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC<HeaderProps> = ({ userName = "Nome do usuário", onLogout }: HeaderProps) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -27,11 +29,12 @@ const Header: React.FC<HeaderProps> = ({ userName = "Nome do usuário", onLogout
     function toggle() {
         setIsOpen((s) => !s);
     }
+    
+    const navigate = useNavigate()
 
-    function handleLogout() {
-        if (onLogout) onLogout();
-        else console.log("logout");
-        setIsOpen(false);
+    async function handleLogout() {
+        await logoutUser();
+        navigate("/");
     }
 
     return (

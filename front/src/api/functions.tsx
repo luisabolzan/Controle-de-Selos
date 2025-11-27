@@ -181,3 +181,11 @@ export const returnTag = async (tag_id: number) => {
     const parsedId = Number(tag_id);
     return await apiFetch(`/tags/return/${parsedId}`, REQUEST_METHODS.PATCH);
 }
+
+export const logoutUser = async () => {
+    try {
+        await apiFetch('/auth/logout', REQUEST_METHODS.POST);
+    } catch (error) {
+        console.error("Erro ao tentar fazer logout no servidor", error);
+    }
+};

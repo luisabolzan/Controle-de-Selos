@@ -139,7 +139,7 @@ function dateToDdMmYyyy(dataIso: string): string {
 
       </InfoSection>
 
-      <TagApproveButtonWrapper>
+      {/* <TagApproveButtonWrapper>
           <GenericButton
             buttonType="Red"
             content="Confirmar Devolução"
@@ -151,7 +151,7 @@ function dateToDdMmYyyy(dataIso: string): string {
             $flex={true}
             isDisabled={tag?.is_approved ? false : true}
           />
-        </TagApproveButtonWrapper>
+        </TagApproveButtonWrapper> */}
 
     </CardContainer>
   );
