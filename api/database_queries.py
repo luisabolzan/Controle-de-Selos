@@ -1,4 +1,11 @@
-from .api_schemas import ServiceTagSolicitationDTO, SolicitationFilterParams, SolicitationStatusEnum, EventualTagSolicitationDTO, TemporaryTagSolicitationDTO
+from .api_schemas import (
+    ServiceTagSolicitationDTO, 
+    SolicitationFilterParams, 
+    SolicitationStatusEnum, 
+    EventualTagSolicitationDTO, 
+    TemporaryTagSolicitationDTO,
+    TagFilterParams
+)
 from sqlalchemy.sql import text
 from .database_models import Solicitation, Users, Vehicles
 from sqlalchemy import func, or_, and_
@@ -145,3 +152,35 @@ def get_user_tags(user_id: int, session: Session) -> List[Solicitation]:
     ).all()
     
     return tags
+
+def get_tags_filtered(session: Session, filters: TagFilterParams, user_id: int = None):
+    query = session.query(Solicitation).join(Users).outerjoin(Vehicles)
+
+    query = query.filter(
+        Solicitation.is_approved == True,
+        Solicitation.reviewed == True,
+        and_(Solicitation.start_date <= func.now(), Solicitation.end_date >= func.now())
+    )
+
+    if user_id:
+        query = query.filter(Solicitation.user_id == user_id)
+
+    if filters.tag_type:
+        query = query.filter(Solicitation.solicited_tag_type == filters.tag_type)
+    
+    if filters.user_name:
+        query = query.filter(Users.name.ilike(f"%{filters.user_name}%"))
+
+    if filters.plate:
+        query = query.filter(Vehicles.plate.ilike(f"%{filters.plate}%"))
+
+    total = query.count()
+    skip = (filters.page - 1) * filters.size
+    
+    items = query.order_by(Solicitation.end_date.asc())\
+                 .options(joinedload(Solicitation.vehicle), joinedload(Solicitation.user))\
+                 .offset(skip)\
+                 .limit(filters.size)\
+                 .all()
+
+    return items, total
