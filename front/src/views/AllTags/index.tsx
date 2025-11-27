@@ -16,6 +16,7 @@ import PaginationButtons from "../../components/PaginationButtons";
 import ConfirmModal from "../../components/ConfirmModal";
 import Toast from "../../components/Toast";
 import UserTagCard from "../../components/UserTagCard";
+import AdminTagCard from "../../components/UserTagCard";
 
 import { sleep } from "../../utils/functions";
 
@@ -100,8 +101,8 @@ const AllTags = () => {
       const filters = {
         page: currentPage,
         size: tagsPerPage,
-        name: name,
-        plate: plate,
+        current_username: name,
+        vehicle_plate: plate,
         tag_type: tagValues[selectedTag],
         status: 'pendente' as const
       };

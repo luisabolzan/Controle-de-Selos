@@ -153,7 +153,7 @@ function dateToDdMmYyyy(dataIso: string): string {
       {showApproveButtons && request && (
         <RequestApproveButtonWrapper>
           <GenericButton
-            buttonType="Transparent"
+            buttonType="Red"
             content="Excluir"
             onClick={() => onDeleteClick?.(request)}
             height="30px"
@@ -163,19 +163,9 @@ function dateToDdMmYyyy(dataIso: string): string {
             $flex={true}
             isDisabled={request.reviewed}
           />
-          <GenericButton
-            buttonType="Red"
-            content="Editar"
-            onClick={() => onEditClick?.(request)}
-            height="30px"
-            fontSize="1em"
-            fontWeight="800"
-            flexStatus="1"
-            $flex={true}
-            isDisabled={request.reviewed}
-          />
         </RequestApproveButtonWrapper>
       )}
+      
     </CardContainer>
   );
 };

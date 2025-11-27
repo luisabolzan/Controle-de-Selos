@@ -35,6 +35,7 @@ const UserTagCard: React.FC<UserTagCardProps> = ({
   onRejectClick,
   onEditClick,
   onDeleteClick,
+  onDevolutionClick,
   selected = false,
 }) => {
   const navigate = useNavigate();
@@ -161,6 +162,22 @@ function dateToDdMmYyyy(dataIso: string): string {
         ):null}
 
       </InfoSection>
+
+      {isAdmin ? (
+        <TagApproveButtonWrapper>
+          <GenericButton
+            buttonType="Red"
+            content="Confirmar Devolução"
+            onClick={() => onDevolutionClick?.(tag)}
+            height="30px"
+            fontSize="1em"
+            fontWeight="800"
+            flexStatus="1"
+            $flex={true}
+            isDisabled={tag?.current_username ? false : true}
+          />
+        </TagApproveButtonWrapper>
+      ):null}
 
     </CardContainer>
   );

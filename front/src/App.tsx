@@ -33,7 +33,6 @@ function App() {
         <Route path='/userRequest' element={<UserRequest/>}/>
         <Route path='/userTag' element={<UserTag/>}/>
         <Route path='/allTags' element={<AllTags/>}/>
-        <Route path='/registeredTags' element={<RegisterdTags/>}/>
         <Route path='/serviceTagRegister' element={<ServiceTagRegister/>}/>
         <Route path='/' element={<Login/>}/>
         <Route path='/signup' element={<SignUp/>}/>

@@ -19,7 +19,7 @@ import AdminTagCard from "../../components/AdminTagCard";
 
 import { sleep } from "../../utils/functions";
 
-import { getAllSolicitations, updateSolicitationStatus } from "../../api/functions";
+import { getAllSolicitations, getAllTags, updateSolicitationStatus } from "../../api/functions";
 import { Request } from "../../components/UserRequestCard/types";
 import { useNavigate } from "react-router-dom";
 
@@ -51,7 +51,7 @@ const RegisterdTags = () => {
     if (window.innerWidth >= 1900) return 8;
     else if (window.innerWidth >= 1612) return 6;
     else return 4;
-  };
+  };  
 
   const getTagsPerPage2 = () => {
       if (window.innerWidth >= 1900) return 6;
@@ -107,7 +107,7 @@ const RegisterdTags = () => {
         status: 'pendente' as const
       };
 
-      const response = await getAllSolicitations(filters);
+      const response = await getAllTags(filters);
 
       setRequests(response.data);
       setTotalItems(response.total); // Importante para o componente de paginação saber o fim
@@ -275,7 +275,7 @@ const RegisterdTags = () => {
         <Header />
 
         <Separator>
-          <h1> Selos de Serviço Registrados </h1>
+          <h1> Selos Registrados </h1>
         </Separator>
 
         <CardsContainer>

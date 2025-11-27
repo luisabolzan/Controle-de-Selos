@@ -48,14 +48,15 @@ export interface Tag {
 }
 
 export interface UserTagCardProps {
-  tag?: Tag;
+  tag: Tag;
   showApproveButtons?: boolean;
   showEditOptions?: boolean;
 
-  onApproveClick?: (ngo: NGO) => void;
-  onRejectClick?: (ngo: NGO) => void;
-  onEditClick?: (ngo: NGO) => void;
-  onDeleteClick?: (ngo: NGO) => void;
+  onApproveClick?: (tag: Tag) => void;
+  onRejectClick?: (tag: Tag) => void;
+  onEditClick?: (tag: Tag) => void;
+  onDeleteClick?: (tag: Tag) => void;
+  onDevolutionClick?: (tag: Tag) => void;
 
   selected?: boolean;
 }

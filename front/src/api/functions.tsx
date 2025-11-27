@@ -18,6 +18,15 @@ interface FilterOptions {
     status?: 'pendente' | 'aprovado' | 'rejeitado' | '';
 }
 
+interface FilterOptions {
+    page?: number;
+    size?: number;
+    current_username?: string;
+    vehicle_plate?: string;
+    tag_type?: string;
+    status?: 'pendente' | 'aprovado' | 'rejeitado' | '';
+}
+
 const apiFetch = async (endpoint: string, method: string, body?: object, useCredentials: boolean = true) => {
     try {
         const response = await fetch(`${API_URL}${endpoint}`, {
@@ -134,10 +143,10 @@ export const getUserTags = async (filters: FilterOptions) =>{
 
     if (filters.page) params.append('page', filters.page.toString());
     if (filters.size) params.append('size', filters.size.toString());
-    if (filters.plate) params.append('plate', filters.plate); 
+    if (filters.vehicle_plate) params.append('plate', filters.vehicle_plate); 
     if (filters.tag_type) params.append('tag_type', filters.tag_type);
 
-    return await apiFetch(`{/tags/my?${params.toString()}`, REQUEST_METHODS.GET);
+    return await apiFetch(`/tags/my?${params.toString()}`, REQUEST_METHODS.GET);
 }
 
 export const getAllTags = async (filters: FilterOptions) =>{
@@ -145,8 +154,8 @@ export const getAllTags = async (filters: FilterOptions) =>{
 
     if (filters.page) params.append('page', filters.page.toString());
     if (filters.size) params.append('size', filters.size.toString());
-    if (filters.name) params.append('name', filters.name);
-    if (filters.plate) params.append('plate', filters.plate); 
+    if (filters.current_username) params.append('name', filters.current_username);
+    if (filters.vehicle_plate) params.append('plate', filters.vehicle_plate); 
     if (filters.tag_type) params.append('tag_type', filters.tag_type);
 
     return await apiFetch(`/tags/?${params.toString()}`, REQUEST_METHODS.GET);

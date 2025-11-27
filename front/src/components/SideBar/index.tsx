@@ -62,12 +62,6 @@ const SideBar: React.FC<SideBarProps> = ({}: SideBarProps) => {
 
                 {isAdmin && (
                     <NavItem>
-                        <ItemText visible={isExpanded} onClick={() => navigate("/registeredTags")}>→ Selos Registrados</ItemText>
-                    </NavItem>
-                )}
-
-                {isAdmin && (
-                    <NavItem>
                         <ItemText visible={isExpanded} onClick={() => navigate("/serviceTagRegister")}>→ Registrar Selo de Serviço</ItemText>
                     </NavItem>
                 )}
