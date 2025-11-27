@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from api.api_schemas import TagFilterParams, GenericTagDTO, PaginatedResponse
-from api.database_queries import get_tags_filtered
+from api.database_queries import get_tags_filtered, return_tag
 from api.database_access import get_db
 from api.utils.security import get_current_user, get_current_admin
 from api.database_models import Users, Solicitation
@@ -59,3 +59,13 @@ def get_all_tags(
         size=filters.size,
         pages=total_pages
     )
+    
+@tags_router.patch('/return/{tag_id}', status_code=status.HTTP_200_OK)
+def return_tag(
+    tag_id: int,
+    session: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_admin)
+):
+    return_tag(session=session, tag_id=tag_id)
+    
+    return {"message": "Tag returned successfully."}
