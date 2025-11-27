@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useMemo} from "react";
 import {
   CardContainer,
   InfoSection,
@@ -15,9 +15,10 @@ import { UserTagCardProps } from "./types";
 
 import Calendar1 from "../../assets/calendar-arrow-up.svg";
 import Calendar2 from "../../assets/calendar-check-2.svg";
+import UserSvg from "../../assets/user.svg"
 import Phone from "../../assets/car.svg";
 import Email from "../../assets/id-card.svg";
-import { ClockAlert, CircleX, CircleCheckBig, Tag } from "lucide-react";
+import { ClockAlert, CircleX, CircleCheckBig, Tag, User } from "lucide-react";
 
 import GenericButton from "../GenericButton";
 import EditButton from "../EditButton";
@@ -94,6 +95,12 @@ function dateToDdMmYyyy(dataIso: string): string {
 
   const TagIcons = [Calendar1, Phone, Email];
 
+  // lê isAdmin do localStorage (aceita 'true' ou '1')
+  const isAdmin = useMemo(() => {
+    const v = localStorage.getItem('isAdmin');
+    return v === 'true' || v === '1';
+  }, []);
+
   return (
     <CardContainer
       onMouseEnter={() => setHovered(true)}
@@ -145,6 +152,13 @@ function dateToDdMmYyyy(dataIso: string): string {
             <p>{info ? info : "Indisponível"}</p>
           </DataItem>
         ))}
+
+        {/* {isAdmin ? (
+          <DataItem>
+            <img src={UserSvg} alt="" />
+            <p>{tag?.current_user_email}</p>
+          </DataItem>
+        ):null} */}
 
       </InfoSection>
 

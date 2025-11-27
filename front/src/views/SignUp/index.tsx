@@ -55,7 +55,7 @@ export const SignUp: React.FC = () => {
             setError(false);
             setPassword("")
             setConfirmPassword("")
-            navigate("/login", { state: { fromSignUp: true} });
+            navigate("/", { state: { fromSignUp: true} });
         } catch (error) {
             setError(true);
             setErrorMessage("Falha no cadastro. Verifique seus dados e tente novamente.");

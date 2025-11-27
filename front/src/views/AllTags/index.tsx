@@ -28,7 +28,7 @@ type ModalAction = {
   solicitationId: string;
 } | null;
 
-const UserTag = () => {
+const AllTags = () => {
   // --- ESTADOS DE DADOS ---
   const [tags, setTags] = useState<Tag[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0); // Total geral no banco (para paginação)
@@ -275,7 +275,7 @@ const UserTag = () => {
         <Header />
 
         <Separator>
-          <h1> Meus Selos </h1>
+          <h1> Selos Emprestados </h1>
         </Separator>
 
         <CardsContainer>
@@ -297,7 +297,7 @@ const UserTag = () => {
             {!isLoading && error && <h3>{errorMessage}</h3>}
 
             {tags?.length === 0 && !isLoading && !error && (
-              <h3> Você não possui selos </h3>
+              <h3> Não existe selos emprestados </h3>
             )}
             
             <RequestCardsContainer isBarExpanded={isBarExpanded}>
@@ -365,4 +365,4 @@ const UserTag = () => {
   );
 };
 
-export default UserTag;
+export default AllTags;

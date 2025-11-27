@@ -10,6 +10,7 @@ import TempTagRequest from './views/TempTagRequest';
 import TempTagRequest2 from './views/TempTagRequest2';
 import UserRequest from './views/UserRequest';
 import UserTag from './views/UserTag';
+import AllTags from './views/AllTags';
 import Login from './views/Login';
 import SignUp from './views/SignUp';
 import RegisterdTags from './views/RegisteredTags';
@@ -31,6 +32,7 @@ function App() {
         <Route path='/approve' element={<ApproveRequest/>}/>
         <Route path='/userRequest' element={<UserRequest/>}/>
         <Route path='/userTag' element={<UserTag/>}/>
+        <Route path='/allTags' element={<AllTags/>}/>
         <Route path='/registeredTags' element={<RegisterdTags/>}/>
         <Route path='/serviceTagRegister' element={<ServiceTagRegister/>}/>
         <Route path='/' element={<Login/>}/>

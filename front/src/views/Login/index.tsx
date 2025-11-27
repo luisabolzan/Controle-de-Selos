@@ -178,7 +178,7 @@ export const Login: React.FC = () => {
                         width="100%"
                         fontSize="1rem"
                         textColor="#553525"
-                        onClick={() => navigate("/")}
+                        onClick={() => navigate("/signUp")}
                     >
                     <h2>Criar Conta</h2>
 

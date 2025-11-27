@@ -72,6 +72,13 @@ const SideBar: React.FC<SideBarProps> = ({}: SideBarProps) => {
                     </NavItem>
                 )}
 
+                {isAdmin && (
+                    <NavItem>
+                        <ItemText visible={isExpanded} onClick={() => navigate("/allTags")}>→ Selos Emprestados</ItemText>
+                    </NavItem>
+                )}
+
+
             </NavList>
 
             <LogoImage src={LogoINF} alt="INF logo" />
