@@ -44,6 +44,7 @@ export interface Tag {
   vehicle_plate: string
   current_user_email: string
   end_date: string
+  current_username: string
 }
 
 export interface UserTagCardProps {

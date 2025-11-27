@@ -128,12 +128,28 @@ export const registerUser = async (username: string, password: string, name: str
     return await apiFetch('/users/register', REQUEST_METHODS.POST, requestData, false);
 }
 
-export const getUserTags = async () =>{
-    return await apiFetch('/tags/my', REQUEST_METHODS.GET);
+export const getUserTags = async (filters: FilterOptions) =>{
+
+    const params = new URLSearchParams();
+
+    if (filters.page) params.append('page', filters.page.toString());
+    if (filters.size) params.append('size', filters.size.toString());
+    if (filters.plate) params.append('plate', filters.plate); 
+    if (filters.tag_type) params.append('tag_type', filters.tag_type);
+
+    return await apiFetch(`{/tags/my?${params.toString()}`, REQUEST_METHODS.GET);
 }
 
-export const getAllTags = async () =>{
-    return await apiFetch('/tags/', REQUEST_METHODS.GET);
+export const getAllTags = async (filters: FilterOptions) =>{
+    const params = new URLSearchParams();
+
+    if (filters.page) params.append('page', filters.page.toString());
+    if (filters.size) params.append('size', filters.size.toString());
+    if (filters.name) params.append('name', filters.name);
+    if (filters.plate) params.append('plate', filters.plate); 
+    if (filters.tag_type) params.append('tag_type', filters.tag_type);
+
+    return await apiFetch(`/tags/?${params.toString()}`, REQUEST_METHODS.GET);
 }
 
 export const getUserSolicitations = async (filters: FilterOptions) => {

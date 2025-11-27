@@ -153,12 +153,12 @@ function dateToDdMmYyyy(dataIso: string): string {
           </DataItem>
         ))}
 
-        {/* {isAdmin ? (
+        {isAdmin ? (
           <DataItem>
             <img src={UserSvg} alt="" />
-            <p>{tag?.current_user_email}</p>
+            <p>{tag?.current_username}</p>
           </DataItem>
-        ):null} */}
+        ):null}
 
       </InfoSection>
 

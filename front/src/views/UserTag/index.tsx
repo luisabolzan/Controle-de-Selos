@@ -106,7 +106,7 @@ const UserTag = () => {
         status: 'pendente' as const
       };
 
-      const response = await getUserTags();
+      const response = await getUserTags(filters);
       console.log(response);
 
       setTags(response.data);

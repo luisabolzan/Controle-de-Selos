@@ -106,10 +106,10 @@ const AllTags = () => {
         status: 'pendente' as const
       };
 
-      const response = await getUserTags();
+      const response = await getAllTags(filters);
       console.log(response);
 
-      setTags(response.tags);
+      setTags(response.data);
       setTotalItems(response.total); // Importante para o componente de paginação saber o fim
 
     } catch (err) {
@@ -212,7 +212,7 @@ const AllTags = () => {
     fullCloseTimeoutRef.current = setTimeout(() => {
       setShowToast(false);
       setToastType(null);
-    }, 3500);
+    }, 3500); 
   };
 
   const openModal = (tipo: "excluir" , solicitationId: string) => {

@@ -18,6 +18,7 @@ def map_tags_to_dto(solicitations: List[Solicitation]) -> List[GenericTagDTO]:
             tag_id=sol.solicitation_id,      
             vehicle_plate=sol.vehicle.plate if sol.vehicle else None,
             current_user_email=sol.user.email if sol.user else None,
+            current_username =sol.user.name if sol.user else None,
             end_date=sol.end_date
         ) for sol in solicitations
     ]

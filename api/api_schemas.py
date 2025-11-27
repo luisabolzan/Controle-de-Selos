@@ -83,6 +83,7 @@ class GenericTagDTO(BaseModel):
     tag_id: int
     vehicle_plate: Optional[str] = None
     current_user_email: Optional[str] = None
+    current_username: Optional[str] = None
     end_date: Optional[datetime] = None
     
 # More Generic DTO for visualization purposes
