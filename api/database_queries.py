@@ -186,12 +186,12 @@ def get_tags_filtered(session: Session, filters: TagFilterParams, user_id: int =
     return items, total
 
 
-def return_tag(session: Session, tag_id: int):
+def set_tag_available(session: Session, tag_id: int, available : bool):
     tag = session.query(Tags)\
         .filter(Tags.tag_id == tag_id, Tags.available == False).\
             first()
             
-    tag.available = True
+    tag.available = available
     session.commit()
     
     return tag

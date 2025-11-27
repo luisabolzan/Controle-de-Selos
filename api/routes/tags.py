@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from api.api_schemas import TagFilterParams, GenericTagDTO, PaginatedResponse
-from api.database_queries import get_tags_filtered, return_tag
+from api.database_queries import get_tags_filtered, set_tag_available
 from api.database_access import get_db
 from api.utils.security import get_current_user, get_current_admin
 from api.database_models import Users, Solicitation
@@ -67,6 +67,6 @@ def return_tag(
     session: Session = Depends(get_db),
     current_user: Users = Depends(get_current_admin)
 ):
-    return_tag(session=session, tag_id=tag_id)
+    set_tag_available(session=session, tag_id=tag_id, available=True)
     
     return {"message": "Tag returned successfully."}

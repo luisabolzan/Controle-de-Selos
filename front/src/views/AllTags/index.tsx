@@ -20,13 +20,13 @@ import AdminTagCard from "../../components/UserTagCard";
 
 import { sleep } from "../../utils/functions";
 
-import { getAllSolicitations, updateSolicitationStatus, getUserTags, getAllTags } from "../../api/functions";
+import { getAllSolicitations, updateSolicitationStatus, getUserTags, getAllTags, returnTag } from "../../api/functions";
 import { Tag } from "../../components/UserTagCard/types";
 import { useNavigate } from "react-router-dom";
 
 type ModalAction = {
   tipo: "excluir";
-  solicitationId: string;
+  solicitationId: number;
 } | null;
 
 const AllTags = () => {
@@ -216,7 +216,7 @@ const AllTags = () => {
     }, 3500); 
   };
 
-  const openModal = (tipo: "excluir" , solicitationId: string) => {
+  const openModal = (tipo: "excluir" , solicitationId: number) => {
     resetToast();
     setModalAction({ tipo, solicitationId });
   };
@@ -226,7 +226,7 @@ const AllTags = () => {
 
     try {
       if (modalAction.tipo === "excluir") {
-        await approveSolicitation(modalAction.solicitationId);
+        await returnTag(modalAction.solicitationId);
       }
       await fetchtags();
 
@@ -265,6 +265,12 @@ const AllTags = () => {
     setCurrentPage(1);
 
   };
+
+  const handleDevolution = async (tagid : number) => {
+
+    await returnTag(tagid);
+
+  }
 
   const navigate = useNavigate();
 
@@ -307,14 +313,15 @@ const AllTags = () => {
                   <UserTagCard
                     key={tag.tag_id}
                     tag={tag}
+                    onDevolutionClick={()=>openModal("excluir", tag.tag_id)}  
                   />
                 ))}
 
               <ConfirmModal
                 isOpen={modalAction !== null}
-                title= "Tem certeza que deseja exlcuir esta solicitação?"
-                message= "Tem certeza de que deseja excluir esta solicitação? Após exlcuir essa solicitação o admnsitrador não poderá mais visualizá-la e aprová-la."
-                confirmLabel="Sim, Excluir"
+                title= "Confirmar Devolução?"
+                message= 'Confirmar Devolução torna este selo disponível ao uso de outros usuários. O selo foi devolvido e esta em suas mãos?' 
+                confirmLabel="Sim, Confirmar"
                 cancelLabel="Cancelar"
                 onConfirm={handleConfirm}
                 onClose={() => setModalAction(null)}
