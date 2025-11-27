@@ -109,7 +109,7 @@ const UserTag = () => {
       const response = await getUserTags();
       console.log(response);
 
-      setTags(response.tags);
+      setTags(response.data);
       setTotalItems(response.total); // Importante para o componente de paginação saber o fim
 
     } catch (err) {

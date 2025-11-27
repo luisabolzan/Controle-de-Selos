@@ -20,6 +20,14 @@ class SolicitationFilterParams(BaseModel):
     tag_type: Optional[str] = None # 'service', 'eventual', etc.
     status: Optional[SolicitationStatusEnum] = None
 
+class TagFilterParams(BaseModel):
+    page: int = Field(1, ge=1, description="Número da página")
+    size: int = Field(10, ge=1, le=100, description="Itens por página")
+    
+    tag_type: Optional[str] = None
+    user_name: Optional[str] = None 
+    plate: Optional[str] = None # Vehicle plate
+    
 class LoginResponseDTO(BaseModel):
     message: Optional[str] = "Login successful"
     isAdmin: bool
@@ -76,9 +84,6 @@ class GenericTagDTO(BaseModel):
     vehicle_plate: Optional[str] = None
     current_user_email: Optional[str] = None
     end_date: Optional[datetime] = None
-
-class GenericTagResponse(BaseModel):
-    tags: List[GenericTagDTO]
     
 # More Generic DTO for visualization purposes
 # Don't use this for creating or updating records
